@@ -1,0 +1,11 @@
+.restaurant-item-card {
+	margin: 20px;
+	min-width: 400px;
+	max-width: 30%;
+}
+
+@media screen and (max-width: 600px) {
+	.restaurant-item-card {
+		min-width: 80%;
+	}
+}
