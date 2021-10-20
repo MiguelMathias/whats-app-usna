@@ -53,7 +53,7 @@ const RestaurantInfoButton: React.FC<RestaurantInfoButtonProps> = ({ restaurant 
 	return (
 		<>
 			<IonButtons slot='end'>
-				<IonButton onClick={() => showInfoModal()}>
+				<IonButton onClick={() => showInfoModal({ swipeToClose: true })}>
 					<IonIcon slot='icon-only' icon={informationCircleOutline} />
 				</IonButton>
 			</IonButtons>
