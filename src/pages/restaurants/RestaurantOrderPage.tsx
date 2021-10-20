@@ -20,9 +20,10 @@ import { useContext } from 'react'
 import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import RestaurantMenu from '../../components/restaurants/RestaurantMenu'
-import { RestaurantModel, RestaurantOrderModel } from '../../data/restaurants/Restaurant'
+import { orderTotalPrice, RestaurantModel, RestaurantOrderModel } from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { decodeB64Url, formatDateDefault } from '../../util/misc'
+import LoadingPage from '../LoadingPage'
 
 type RestaurantOrderPageProps = {
 	restaurant: RestaurantModel
@@ -36,6 +37,8 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ restaurant, o
 	const restaurantOrder = orders.find((order) => order.submitted?.isEqual(restaurantOrderTS))
 	const [showAddSuccessToast, _] = useIonToast()
 
+	if (!restaurantOrder) return <LoadingPage />
+
 	return (
 		<IonPage>
 			<IonHeader>
@@ -43,13 +46,20 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ restaurant, o
 					<IonButtons slot='start'>
 						<IonBackButton defaultHref={`/restaurants/${restaurant.uid}/orders`} />
 					</IonButtons>
-					<IonTitle>{restaurantOrder?.submitted ? formatDateDefault(restaurantOrder?.submitted?.toDate()) : 'Date of order unknown'}</IonTitle>
+					<IonTitle>
+						{restaurantOrder.submitted
+							? formatDateDefault(restaurantOrder.submitted?.toDate())
+							: 'Date of order unknown'}
+					</IonTitle>
 					<IonButtons slot='end'>
 						<IonButton
 							onClick={() => {
 								if (user) {
-									restaurantOrder?.restaurantBagItems.forEach((restaurantBagItem) =>
-										setDoc(doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid), restaurantBagItem)
+									restaurantOrder.restaurantBagItems.forEach((restaurantBagItem) =>
+										setDoc(
+											doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid),
+											restaurantBagItem
+										)
 									)
 									showAddSuccessToast({
 										header: 'Added Items',
@@ -67,38 +77,48 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ restaurant, o
 			</IonHeader>
 			<IonContent>
 				<IonList>
-					{restaurantOrder?.submitted && (
+					<IonItem>
+						<IonLabel>Order Total:</IonLabel>
+						<IonLabel slot='end'>${orderTotalPrice(restaurantOrder)}</IonLabel>
+					</IonItem>
+					{restaurantOrder.submitted && (
 						<IonItem>
 							<IonLabel>Submitted</IonLabel>
 							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.submitted.toDate())}</IonLabel>
 						</IonItem>
 					)}
-					{restaurantOrder?.accepted && (
+					{restaurantOrder.accepted && (
 						<IonItem>
 							<IonLabel>Accepted</IonLabel>
 							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.accepted.toDate())}</IonLabel>
 						</IonItem>
 					)}
-					{restaurantOrder?.rejected && (
+					{restaurantOrder.rejected && (
 						<IonItem>
 							<IonLabel>Rejected</IonLabel>
 							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.rejected.toDate())}</IonLabel>
 						</IonItem>
 					)}
-					{restaurantOrder?.fulfilled && (
+					{restaurantOrder.fulfilled && (
 						<IonItem>
 							<IonLabel>Fulfilled</IonLabel>
 							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.fulfilled.toDate())}</IonLabel>
 						</IonItem>
 					)}
-					{restaurantOrder?.scheduledPickup && (
+					{restaurantOrder.scheduledPickup && (
 						<IonItem>
 							<IonLabel>Scheduled Pickup</IonLabel>
-							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.scheduledPickup.toDate())}</IonLabel>
+							<IonLabel slot='end'>
+								{formatDateDefault(restaurantOrder.scheduledPickup.toDate())}
+							</IonLabel>
 						</IonItem>
 					)}
 				</IonList>
-				<RestaurantMenu restaurant={restaurant} restaurantBagItems={restaurantOrder?.restaurantBagItems ?? []} isOrder />
+				<RestaurantMenu
+					restaurant={restaurant}
+					restaurantBagItems={restaurantOrder.restaurantBagItems ?? []}
+					isOrder
+				/>
 			</IonContent>
 		</IonPage>
 	)

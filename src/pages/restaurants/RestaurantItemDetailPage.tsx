@@ -24,7 +24,12 @@ import { useContext, useState } from 'react'
 import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import RestaurantItemFavoriteButton from '../../components/restaurants/RestaurantItemFavoriteButton'
-import { RestaurantBagItemModel, restaurantBagItemPrice, RestaurantItemModel, RestaurantModel } from '../../data/restaurants/Restaurant'
+import {
+	RestaurantBagItemModel,
+	restaurantBagItemPrice,
+	RestaurantItemModel,
+	RestaurantModel,
+} from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { decodeB64Url } from '../../util/misc'
 
@@ -133,9 +138,12 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ res
 										...restaurantBagItem,
 										restaurantItem: {
 											...restaurantBagItem.restaurantItem,
-											selectedIngredients: restaurantBagItem.restaurantItem.selectedIngredients.includes(i)
-												? restaurantBagItem.restaurantItem.selectedIngredients.filter((ingIndex) => ingIndex !== i)
-												: restaurantBagItem.restaurantItem.selectedIngredients.concat(i),
+											selectedIngredients:
+												restaurantBagItem.restaurantItem.selectedIngredients.includes(i)
+													? restaurantBagItem.restaurantItem.selectedIngredients.filter(
+															(ingIndex) => ingIndex !== i
+													  )
+													: restaurantBagItem.restaurantItem.selectedIngredients.concat(i),
 										},
 									})
 								}}
