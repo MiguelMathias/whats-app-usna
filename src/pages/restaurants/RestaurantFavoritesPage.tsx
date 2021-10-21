@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { AppContext } from '../../AppContext'
 import RestaurantMenu from '../../components/restaurants/RestaurantMenu'
 import RestaurantPageHeader from '../../components/restaurants/RestaurantPageHeader'
-import { RestaurantBagItemModel, RestaurantModel } from '../../data/restaurants/Restaurant'
+import { RestaurantModel } from '../../data/restaurants/Restaurant'
 
 type RestaurantFavoritesPageProps = {
 	restaurant: RestaurantModel
@@ -17,16 +17,7 @@ const RestaurantFavoritesPage: React.FC<RestaurantFavoritesPageProps> = ({ resta
 			<IonContent>
 				<RestaurantMenu
 					restaurant={restaurant}
-					restaurantBagItems={userFavorites
-						.filter((restaurantItem) => restaurantItem.restaurantUid === restaurant.uid)
-						.map(
-							(restaurantItem) =>
-								({
-									restaurantItem,
-									note: '',
-									uid: '',
-								} as RestaurantBagItemModel)
-						)}
+					restaurantBagItems={userFavorites.filter((restaurantBagItem) => restaurantBagItem.restaurantItem.restaurantUid === restaurant.uid)}
 				/>
 			</IonContent>
 		</IonPage>

@@ -22,7 +22,7 @@ import { useEffectOnce } from 'react-use'
 import { AppContext, AppContextType } from './AppContext'
 import SideMenu from './components/SideMenu'
 import { UserDataModel } from './data/account/User'
-import { RestaurantBagItemModel, RestaurantItemModel, RestaurantModel } from './data/restaurants/Restaurant'
+import { RestaurantBagItemModel, RestaurantModel } from './data/restaurants/Restaurant'
 import { auth, firestore } from './Firebase'
 import Account from './pages/account/Account'
 import Home from './pages/Home'
@@ -33,7 +33,7 @@ import './theme/variables.css'
 const App: React.FC = () => {
 	const [user, setUser] = useState<User | undefined>(undefined)
 	const [userData, setUserData] = useState<UserDataModel | undefined>(undefined)
-	const [userFavorites, setUserFavorites] = useState<RestaurantItemModel[]>([])
+	const [userFavorites, setUserFavorites] = useState<RestaurantBagItemModel[]>([])
 	const [userBag, setUserBag] = useState<RestaurantBagItemModel[]>([])
 	const [restaurants, setRestaurants] = useState<RestaurantModel[]>([])
 	const [showBadAccountToast, _] = useIonToast()
@@ -52,6 +52,7 @@ const App: React.FC = () => {
 	useEffect(() => {
 		if (user) {
 			const userDataUnsub = onSnapshot(doc(firestore, 'users', user.uid), (snapshot) => {
+				console.log()
 				if (snapshot.exists()) {
 					const newUserData = snapshot.data() as UserDataModel
 					if (!newUserData.uid) newUserData.uid = user.uid
@@ -61,11 +62,10 @@ const App: React.FC = () => {
 					setDoc(doc(firestore, 'users', user.uid), {
 						uid: user.uid,
 						displayName: user.displayName,
-						bagItems: [],
 					} as UserDataModel)
 			})
 			const userFavoritesUnsub = onSnapshot(collection(firestore, 'users', user.uid, 'favorites'), (snapshot) =>
-				setUserFavorites(snapshot.docs.map((doc) => doc.data() as RestaurantItemModel))
+				setUserFavorites(snapshot.docs.map((doc) => doc.data() as RestaurantBagItemModel))
 			)
 			const userBagUnsub = onSnapshot(collection(firestore, 'users', user.uid, 'bag'), (snapshot) =>
 				setUserBag(snapshot.docs.map((doc) => doc.data() as RestaurantBagItemModel))

@@ -43,7 +43,7 @@ if (!Array.prototype.indexOfValue)
 		return index
 	}
 
-const object_equals = (x: any, y: any): boolean => {
+export const object_equals = (x: any, y: any): boolean => {
 	if (x === y) return true
 	// if both x and y are null or undefined and exactly the same
 

@@ -3,16 +3,24 @@ import { deleteDoc, doc, setDoc } from 'firebase/firestore'
 import { star, starOutline } from 'ionicons/icons'
 import { useContext } from 'react'
 import { AppContext } from '../../AppContext'
-import { RestaurantItemModel } from '../../data/restaurants/Restaurant'
+import { RestaurantBagItemModel } from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
+import { object_equals } from '../../util/misc'
 
 type RestaurantItemFavoriteButtonProps = {
-	restaurantItem: RestaurantItemModel
+	restaurantBagItem: RestaurantBagItemModel
 	slot?: string
+	compByDetail?: boolean
 }
 
-const RestaurantItemFavoriteButton: React.FC<RestaurantItemFavoriteButtonProps> = ({ restaurantItem, slot }) => {
+const RestaurantItemFavoriteButton: React.FC<RestaurantItemFavoriteButtonProps> = ({ restaurantBagItem, slot, compByDetail }) => {
 	const { user, userFavorites } = useContext(AppContext)
+
+	const isFavorite = () =>
+		compByDetail
+			? userFavorites.filter((favoriteItem) => object_equals(favoriteItem, restaurantBagItem)).length > 0
+			: userFavorites.map((favItem) => favItem.uid).includes(restaurantBagItem.uid)
+
 	return (
 		<IonButtons slot={slot}>
 			<IonButton
@@ -21,21 +29,12 @@ const RestaurantItemFavoriteButton: React.FC<RestaurantItemFavoriteButtonProps> 
 				color='transparent'
 				onClick={() => {
 					if (user) {
-						if (userFavorites.map((favItem) => favItem.uid).includes(restaurantItem.uid))
-							deleteDoc(doc(firestore, 'users', user.uid, 'favorites', restaurantItem.uid))
-						else setDoc(doc(firestore, 'users', user.uid, 'favorites', restaurantItem.uid), restaurantItem)
+						if (isFavorite()) deleteDoc(doc(firestore, 'users', user.uid, 'favorites', restaurantBagItem.restaurantItem.uid))
+						else setDoc(doc(firestore, 'users', user.uid, 'favorites', restaurantBagItem.restaurantItem.uid), restaurantBagItem)
 					}
 				}}
 			>
-				<IonIcon
-					color='dark'
-					slot='icon-only'
-					icon={
-						userFavorites?.map((favRestItem) => favRestItem.uid).includes(restaurantItem.uid)
-							? star
-							: starOutline
-					}
-				/>
+				<IonIcon color='dark' slot='icon-only' icon={isFavorite() ? star : starOutline} />
 			</IonButton>
 		</IonButtons>
 	)

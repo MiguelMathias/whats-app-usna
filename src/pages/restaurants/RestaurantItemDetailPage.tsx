@@ -24,12 +24,7 @@ import { useContext, useState } from 'react'
 import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import RestaurantItemFavoriteButton from '../../components/restaurants/RestaurantItemFavoriteButton'
-import {
-	RestaurantBagItemModel,
-	restaurantBagItemPrice,
-	RestaurantItemModel,
-	RestaurantModel,
-} from '../../data/restaurants/Restaurant'
+import { RestaurantBagItemModel, restaurantBagItemPrice, RestaurantItemModel, RestaurantModel } from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { decodeB64Url } from '../../util/misc'
 
@@ -57,7 +52,7 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ res
 						{restaurantBagItem.restaurantItem.name}: ${restaurantBagItemPrice(restaurantBagItem)}
 					</IonTitle>
 					<IonButtons slot='end'>
-						<RestaurantItemFavoriteButton restaurantItem={restaurantBagItem.restaurantItem} />
+						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} compByDetail />
 						<IonButton
 							onClick={async () => {
 								if (userData && user) {
@@ -95,6 +90,32 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ res
 					{/* add image slides */}
 					<IonItemDivider>Order Details</IonItemDivider>
 					<IonItem>
+						<b>Ingredients:</b>
+					</IonItem>
+					{restaurantBagItem.restaurantItem.ingredients?.map((ingredient, i) => (
+						<IonItem key={i}>
+							<IonCheckbox
+								slot='start'
+								checked={restaurantBagItem.restaurantItem.selectedIngredients.includes(i)}
+								onIonChange={(e) => {
+									setRestaurantBagItem({
+										...restaurantBagItem,
+										restaurantItem: {
+											...restaurantBagItem.restaurantItem,
+											selectedIngredients: restaurantBagItem.restaurantItem.selectedIngredients.includes(i)
+												? restaurantBagItem.restaurantItem.selectedIngredients.filter((ingIndex) => ingIndex !== i)
+												: restaurantBagItem.restaurantItem.selectedIngredients.concat(i),
+										},
+									})
+								}}
+							/>
+							<IonLabel>
+								{ingredient.name}
+								{!!ingredient.price && ` (+$${ingredient.price})`}
+							</IonLabel>
+						</IonItem>
+					))}
+					<IonItem>
 						<b>Options:</b>
 					</IonItem>
 					{restaurantBagItem.restaurantItem.options.map((option, i) => (
@@ -123,35 +144,6 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ res
 									))}
 								</IonRadioGroup>
 							</IonList>
-						</IonItem>
-					))}
-					<IonItem>
-						<b>Ingredients:</b>
-					</IonItem>
-					{restaurantBagItem.restaurantItem.ingredients?.map((ingredient, i) => (
-						<IonItem key={i}>
-							<IonCheckbox
-								slot='start'
-								checked={restaurantBagItem.restaurantItem.selectedIngredients.includes(i)}
-								onIonChange={(e) => {
-									setRestaurantBagItem({
-										...restaurantBagItem,
-										restaurantItem: {
-											...restaurantBagItem.restaurantItem,
-											selectedIngredients:
-												restaurantBagItem.restaurantItem.selectedIngredients.includes(i)
-													? restaurantBagItem.restaurantItem.selectedIngredients.filter(
-															(ingIndex) => ingIndex !== i
-													  )
-													: restaurantBagItem.restaurantItem.selectedIngredients.concat(i),
-										},
-									})
-								}}
-							/>
-							<IonLabel>
-								{ingredient.name}
-								{!!ingredient.price && ` (+$${ingredient.price})`}
-							</IonLabel>
 						</IonItem>
 					))}
 					<IonItem>

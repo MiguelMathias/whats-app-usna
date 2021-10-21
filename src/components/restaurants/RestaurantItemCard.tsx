@@ -1,14 +1,4 @@
-import {
-	IonButton,
-	IonButtons,
-	IonCard,
-	IonCardContent,
-	IonCardHeader,
-	IonCardTitle,
-	IonIcon,
-	IonLabel,
-	IonRouterLink,
-} from '@ionic/react'
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon, IonLabel, IonRouterLink } from '@ionic/react'
 import { deleteDoc, doc } from 'firebase/firestore'
 import { addOutline, createOutline, removeOutline } from 'ionicons/icons'
 import { useContext } from 'react'
@@ -27,7 +17,6 @@ type RestaurantItemCardProps = {
 
 const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurant, restaurantBagItem, isOrder }) => {
 	const { user } = useContext(AppContext)
-	const restaurantItem = restaurantBagItem.restaurantItem
 	const restaurantBagItemB64Url = encodeB64Url(restaurantBagItem)
 
 	return (
@@ -41,18 +30,16 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurant, res
 					}}
 				>
 					<IonRouterLink routerLink={`/restaurants/${restaurant.uid}/menu/${restaurantBagItemB64Url}`}>
-						<IonCardTitle class='ion-text-left'>{restaurantItem?.name}</IonCardTitle>
+						<IonCardTitle class='ion-text-left'>{restaurantBagItem.restaurantItem.name}</IonCardTitle>
 					</IonRouterLink>
 					<IonButtons>
-						<RestaurantItemFavoriteButton restaurantItem={restaurantItem} />
+						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} />
 					</IonButtons>
 				</div>
 			</IonCardHeader>
 			<IonCardContent>
 				{/* add image slides */}
-				<IonLabel class='ion-text-wrap'>
-					{restaurantBagItem.restaurantItem.ingredients?.map((ingredient) => ingredient.name).join(', ')}
-				</IonLabel>
+				<IonLabel class='ion-text-wrap'>{restaurantBagItem.restaurantItem.ingredients.map((ingredient) => ingredient.name).join(', ')}</IonLabel>
 				<div
 					style={{
 						display: 'flex',
@@ -64,8 +51,7 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurant, res
 						<IonButtons slot='end'>
 							<IonButton
 								onClick={async () => {
-									if (user)
-										await deleteDoc(doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid))
+									if (user) await deleteDoc(doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid))
 								}}
 							>
 								<IonIcon slot='icon-only' icon={removeOutline} />
@@ -75,10 +61,7 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurant, res
 					<IonLabel color='dark'>${restaurantBagItemPrice(restaurantBagItem)}</IonLabel>
 					<IonButtons slot='end'>
 						<IonButton routerLink={`/restaurants/${restaurant.uid}/menu/${restaurantBagItemB64Url}`}>
-							<IonIcon
-								slot='icon-only'
-								icon={restaurantBagItem.uid && !isOrder ? createOutline : addOutline}
-							/>
+							<IonIcon slot='icon-only' icon={restaurantBagItem.uid && !isOrder ? createOutline : addOutline} />
 						</IonButton>
 					</IonButtons>
 				</div>
