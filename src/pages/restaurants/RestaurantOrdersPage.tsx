@@ -6,11 +6,23 @@ import { encodeB64Url, formatDateDefault } from '../../util/misc'
 type RestaurantOrdersPageProps = {
 	restaurant: RestaurantModel
 	orders: RestaurantOrderModel[]
+	locationName: string
+	setLocationName: (location: string) => void
 }
 
-const RestaurantOrdersPage: React.FC<RestaurantOrdersPageProps> = ({ restaurant, orders }) => (
+const RestaurantOrdersPage: React.FC<RestaurantOrdersPageProps> = ({
+	restaurant,
+	orders,
+	locationName,
+	setLocationName,
+}) => (
 	<IonPage>
-		<RestaurantPageHeader headerText='Orders' restaurant={restaurant} />
+		<RestaurantPageHeader
+			headerText='Orders'
+			restaurant={restaurant}
+			locationName={locationName}
+			setLocationName={setLocationName}
+		/>
 		<IonContent>
 			<IonList>
 				{orders.map((order, index) => (

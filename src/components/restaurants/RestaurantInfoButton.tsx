@@ -1,4 +1,17 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonPage, IonTitle, IonToolbar, useIonModal } from '@ionic/react'
+import {
+	IonButton,
+	IonButtons,
+	IonContent,
+	IonHeader,
+	IonIcon,
+	IonItem,
+	IonLabel,
+	IonList,
+	IonPage,
+	IonTitle,
+	IonToolbar,
+	useIonModal,
+} from '@ionic/react'
 import { closeOutline, informationCircleOutline } from 'ionicons/icons'
 import { RestaurantModel } from '../../data/restaurants/Restaurant'
 import { daysOfWeek } from '../../util/misc'
@@ -6,15 +19,16 @@ import AccordionIonItem from '../AccordionIonItem'
 
 type RestaurantInfoButtonProps = {
 	restaurant: RestaurantModel
+	slot?: string
 }
 
-const RestaurantInfoButton: React.FC<RestaurantInfoButtonProps> = ({ restaurant }) => {
+const RestaurantInfoButton: React.FC<RestaurantInfoButtonProps> = ({ restaurant, slot }) => {
 	const [showInfoModal, hideInfoModal] = useIonModal(
 		<IonPage>
 			<IonHeader>
 				<IonToolbar>
 					<IonTitle>{restaurant.name} Info</IonTitle>
-					<IonButtons slot='end'>
+					<IonButtons slot={slot}>
 						<IonButton onClick={() => hideInfoModal()}>
 							<IonIcon slot='icon-only' icon={closeOutline} />
 						</IonButton>

@@ -35,14 +35,20 @@ import { useForceUpdate } from '../../util/hooks'
 
 type RestaurantBagPageProps = {
 	restaurant: RestaurantModel
+	locationName: string
+	setLocationName: (locationName: string) => void
 }
 
-const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => {
+const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, locationName, setLocationName }) => {
 	const { user, userBag, userData } = useContext(AppContext)
 
-	const bagItems = () => userBag.filter((restaurantBagItem) => restaurantBagItem.restaurantItem.restaurantUid === restaurant.uid)
+	const bagItems = () =>
+		userBag.filter((restaurantBagItem) => restaurantBagItem.restaurantItem.restaurantUid === restaurant.uid)
 	const minPickupTime = () =>
-		format(roundToNearestMinutes(addMinutes(Date.now(), orderReadyMinMinutes(bagItems())), { nearestTo: 15 }), "yyyy-MM-dd'T'HH:mm:ss")
+		format(
+			roundToNearestMinutes(addMinutes(Date.now(), orderReadyMinMinutes(bagItems())), { nearestTo: 15 }),
+			"yyyy-MM-dd'T'HH:mm:ss"
+		)
 
 	const [chosenPickupTime, setChosenPickupTime] = useState(minPickupTime())
 
@@ -50,7 +56,13 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 
 	const forceUpdate = useForceUpdate()
 
-	useEffect(() => setChosenPickupTime(new Date(chosenPickupTime) < new Date(minPickupTime()) ? minPickupTime() : chosenPickupTime), [bagItems().join()])
+	useEffect(
+		() =>
+			setChosenPickupTime(
+				new Date(chosenPickupTime) < new Date(minPickupTime()) ? minPickupTime() : chosenPickupTime
+			),
+		[bagItems().join()]
+	)
 
 	return (
 		<IonPage>
@@ -93,7 +105,10 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 										header: 'Order submitted',
 										color: 'success',
 										duration: 2000,
-										message: `Order will be ready at approximately ${format(new Date(chosenPickupTime), 'H:mm')}`,
+										message: `Order will be ready at approximately ${format(
+											new Date(chosenPickupTime),
+											'H:mm'
+										)}`,
 									})
 								}
 							}}

@@ -7,17 +7,30 @@ import { RestaurantModel } from '../../data/restaurants/Restaurant'
 
 type RestaurantFavoritesPageProps = {
 	restaurant: RestaurantModel
+	locationName: string
+	setLocationName: (locationName: string) => void
 }
 
-const RestaurantFavoritesPage: React.FC<RestaurantFavoritesPageProps> = ({ restaurant }) => {
+const RestaurantFavoritesPage: React.FC<RestaurantFavoritesPageProps> = ({
+	restaurant,
+	locationName,
+	setLocationName,
+}) => {
 	const { userFavorites } = useContext(AppContext)
 	return (
 		<IonPage>
-			<RestaurantPageHeader headerText='Favorites' restaurant={restaurant} />
+			<RestaurantPageHeader
+				headerText='Favorites'
+				restaurant={restaurant}
+				locationName={locationName}
+				setLocationName={setLocationName}
+			/>
 			<IonContent>
 				<RestaurantMenu
 					restaurant={restaurant}
-					restaurantBagItems={userFavorites.filter((restaurantBagItem) => restaurantBagItem.restaurantItem.restaurantUid === restaurant.uid)}
+					restaurantBagItems={userFavorites.filter(
+						(restaurantBagItem) => restaurantBagItem.restaurantItem.restaurantUid === restaurant.uid
+					)}
 				/>
 			</IonContent>
 		</IonPage>
