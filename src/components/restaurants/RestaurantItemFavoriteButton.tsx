@@ -18,8 +18,8 @@ const RestaurantItemFavoriteButton: React.FC<RestaurantItemFavoriteButtonProps> 
 
 	const isFavorite = () =>
 		compByDetail
-			? userFavorites.filter((favoriteItem) => object_equals(favoriteItem, restaurantBagItem)).length > 0
-			: userFavorites.map((favItem) => favItem.uid).includes(restaurantBagItem.uid)
+			? userFavorites.filter((favoriteItem) => object_equals({ ...favoriteItem, uid: '' }, { ...restaurantBagItem, uid: '' })).length > 0
+			: userFavorites.map((favItem) => favItem.restaurantItem.uid).includes(restaurantBagItem.restaurantItem.uid)
 
 	return (
 		<IonButtons slot={slot}>
