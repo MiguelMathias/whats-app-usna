@@ -1,32 +1,19 @@
-import { IonButtons, IonHeader, IonMenuButton, IonToolbar } from '@ionic/react'
+import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react'
 import { RestaurantModel } from '../../data/restaurants/Restaurant'
 import RestaurantInfoButton from './RestaurantInfoButton'
-import RestaurantPageHeaderTitle from './RestaurantPageHeaderTitle'
 
 type RestaurantPageHeaderProps = {
 	headerText: string
 	restaurant: RestaurantModel
-	locationName: string
-	setLocationName: (locationName: string) => void
 }
 
-const RestaurantPageHeader: React.FC<RestaurantPageHeaderProps> = ({
-	headerText,
-	restaurant,
-	locationName,
-	setLocationName,
-}) => (
+const RestaurantPageHeader: React.FC<RestaurantPageHeaderProps> = ({ headerText, restaurant }) => (
 	<IonHeader>
 		<IonToolbar>
 			<IonButtons slot='start'>
 				<IonMenuButton />
 			</IonButtons>
-			<RestaurantPageHeaderTitle
-				restaurant={restaurant}
-				headerText={headerText}
-				locationName={locationName}
-				setLocationName={setLocationName}
-			/>
+			<IonTitle>{restaurant.name}</IonTitle>
 			<RestaurantInfoButton slot='end' restaurant={restaurant} />
 		</IonToolbar>
 	</IonHeader>

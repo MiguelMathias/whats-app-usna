@@ -1,10 +1,11 @@
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle } from '@ionic/react'
 import { cashOutline, helpOutline, libraryOutline, personOutline, restaurantOutline } from 'ionicons/icons'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { useLocation } from 'react-router'
 import { AppContext } from '../AppContext'
-import { RestaurantModel } from '../data/restaurants/Restaurant'
-import { capitalize } from '../util/misc'
+import { RestaurantModel, RestaurantPathParameterModel } from '../data/restaurants/Restaurant'
+import { capitalize, encodeB64Url } from '../util/misc'
+import AccordionIonItem from './AccordionIonItem'
 import './SideMenu.scss'
 
 type Pages = {
@@ -12,6 +13,7 @@ type Pages = {
 	path: string
 	icon?: string
 	routerDirection?: string
+	subPages?: Pages[]
 }
 
 type SideMenuProps = {
@@ -32,7 +34,22 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 			(restaurant) =>
 				({
 					title: capitalize(restaurant.name),
-					path: `/restaurants/${restaurant.uid}`,
+					path: `/restaurants/${encodeB64Url({
+						restaurantUid: restaurant.uid,
+					} as RestaurantPathParameterModel)}`,
+					subPages:
+						restaurant.locations.length > 0
+							? restaurant.locations.map(
+									(location) =>
+										({
+											title: capitalize(location.name),
+											path: `/restaurants/${encodeB64Url({
+												restaurantUid: restaurant.uid,
+												locationUid: location.uid,
+											} as RestaurantPathParameterModel)}`,
+										} as Pages)
+							  )
+							: undefined,
 				} as Pages)
 		),
 		accountPages: [
@@ -49,11 +66,48 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 		return pages
 			.filter((route) => !!route.path)
 			.map((page, i) => (
-				<IonMenuToggle key={i} auto-hide='false'>
-					<IonItem routerLink={page.path} routerDirection='root' className={location.pathname.startsWith(page.path) ? 'selected' : undefined}>
-						<IonIcon slot='start' icon={page.icon} />
-						<IonLabel>{page.title}</IonLabel>
-					</IonItem>
+				<IonMenuToggle key={i} autoHide={false}>
+					{page.subPages ? (
+						<IonMenuToggle autoHide={false}>
+							<IonIcon slot='start' icon={page.icon} />
+							<AccordionIonItem
+								className={
+									page.subPages.find((subPage) => location.pathname.startsWith(subPage.path))
+										? 'selected'
+										: undefined
+								}
+								header={page.title}
+								label
+							>
+								{page.subPages.map((subPage, j) => (
+									<React.Fragment key={j}>
+										<IonItem
+											routerLink={subPage.path}
+											routerDirection='root'
+											className={
+												location.pathname.startsWith(subPage.path) ? 'selected' : undefined
+											}
+										>
+											<IonIcon slot='start' icon={subPage.icon} />
+											<IonLabel>{subPage.title}</IonLabel>
+										</IonItem>
+									</React.Fragment>
+								))}
+							</AccordionIonItem>
+						</IonMenuToggle>
+					) : (
+						<>
+							<IonIcon slot='start' icon={page.icon} />
+							<IonItem
+								routerLink={page.path}
+								routerDirection='root'
+								className={location.pathname.startsWith(page.path) ? 'selected' : undefined}
+							>
+								{page.icon && <IonIcon slot='start' icon={page.icon} />}
+								<IonLabel>{page.title}</IonLabel>
+							</IonItem>
+						</>
+					)}
 				</IonMenuToggle>
 			))
 	}

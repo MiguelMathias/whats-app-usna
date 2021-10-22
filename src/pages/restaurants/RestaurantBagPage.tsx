@@ -35,11 +35,9 @@ import { useForceUpdate } from '../../util/hooks'
 
 type RestaurantBagPageProps = {
 	restaurant: RestaurantModel
-	locationName: string
-	setLocationName: (locationName: string) => void
 }
 
-const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, locationName, setLocationName }) => {
+const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => {
 	const { user, userBag, userData } = useContext(AppContext)
 
 	const bagItems = () =>

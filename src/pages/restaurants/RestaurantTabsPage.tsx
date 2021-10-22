@@ -4,8 +4,14 @@ import { bag, calendar, receipt, star } from 'ionicons/icons'
 import { useContext, useEffect, useState } from 'react'
 import { Redirect, Route, useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
-import { RestaurantItemModel, RestaurantModel, RestaurantOrderModel } from '../../data/restaurants/Restaurant'
+import {
+	RestaurantItemModel,
+	RestaurantModel,
+	RestaurantOrderModel,
+	RestaurantPathParameterModel,
+} from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
+import { decodeB64Url } from '../../util/misc'
 import LoadingPage from '../LoadingPage'
 import LoginPromptPage from '../LoginPromptPage'
 import RestaurantBagPage from './RestaurantBagPage'
@@ -21,13 +27,15 @@ type RestaurantTabsPageProps = {
 }
 
 const RestaurantTabsPage: React.FC<RestaurantTabsPageProps> = ({ restaurants }) => {
-	const { restaurantUid } = useParams<{ restaurantUid: string }>()
+	const { restaurantPathParamB64 } = useParams<{ restaurantPathParamB64: string }>()
+	console.log(atob(decodeURI(restaurantPathParamB64)))
+	const { restaurantUid, locationUid } = decodeB64Url<RestaurantPathParameterModel>(restaurantPathParamB64)
+	console.log(restaurantUid, locationUid)
 	const restaurant = restaurants.find((restaurant) => restaurant.uid === restaurantUid)
 
 	const { user } = useContext(AppContext)
 	const [restaurantItems, setRestaurantItems] = useState<RestaurantItemModel[]>([])
 	const [orders, setOrders] = useState<RestaurantOrderModel[]>([])
-	const [locationName, setLocationName] = useState(restaurant?.name ?? '')
 
 	useEffect(() => {
 		if (restaurant) {
@@ -70,37 +78,19 @@ const RestaurantTabsPage: React.FC<RestaurantTabsPageProps> = ({ restaurants }) 
 					<RestaurantItemDetailPage restaurant={restaurant} restaurantItems={restaurantItems} />
 				</Route>
 				<Route exact path={`/restaurants/:restaurantUid/menu`}>
-					<RestaurantMainMenuPage
-						restaurant={restaurant}
-						locationName={locationName}
-						setLocationName={setLocationName}
-						restaurantItems={restaurantItems}
-					/>
+					<RestaurantMainMenuPage restaurant={restaurant} restaurantItems={restaurantItems} />
 				</Route>
 				<Route exact path={`/restaurants/:restaurantUid/favorites`}>
-					<RestaurantFavoritesPage
-						restaurant={restaurant}
-						locationName={locationName}
-						setLocationName={setLocationName}
-					/>
+					<RestaurantFavoritesPage restaurant={restaurant} />
 				</Route>
 				<Route exact path={`/restaurants/:restaurantUid/bag`}>
-					<RestaurantBagPage
-						restaurant={restaurant}
-						locationName={locationName}
-						setLocationName={setLocationName}
-					/>
+					<RestaurantBagPage restaurant={restaurant} />
 				</Route>
 				<Route exact path={`/restaurants/:restaurantUid/orders/:restaurantOrderTSB64`}>
 					<RestaurantOrderPage restaurant={restaurant} orders={orders} />
 				</Route>
 				<Route exact path={`/restaurants/:restaurantUid/orders`}>
-					<RestaurantOrdersPage
-						restaurant={restaurant}
-						orders={orders}
-						locationName={locationName}
-						setLocationName={setLocationName}
-					/>
+					<RestaurantOrdersPage restaurant={restaurant} orders={orders} />
 				</Route>
 			</IonRouterOutlet>
 			<IonTabBar slot='bottom'>

@@ -84,9 +84,15 @@ const App: React.FC = () => {
 	}, [user?.uid])
 
 	onAuthStateChanged(auth, (user) => {
-		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '') /* /m[1-9]{6}@usna\.edu/.test(user?.email ?? '') */) setUser(user ?? undefined)
+		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '') /* /m[1-9]{6}@usna\.edu/.test(user?.email ?? '') */)
+			setUser(user ?? undefined)
 		else if (user) {
-			showBadAccountToast({ header: 'Wrong Account!', message: 'Must sign in with USNA (@usna.edu) Google account', color: 'warning', duration: 2000 })
+			showBadAccountToast({
+				header: 'Wrong Account!',
+				message: 'Must sign in with USNA (@usna.edu) Google account',
+				color: 'warning',
+				duration: 2000,
+			})
 			signOut(auth)
 		} else setUser(undefined)
 	})
@@ -104,7 +110,7 @@ const App: React.FC = () => {
 					<IonSplitPane contentId='main'>
 						<SideMenu restaurants={restaurants} />
 						<IonRouterOutlet id='main'>
-							<Route path={`/restaurants/:restaurantUid`}>
+							<Route path={`/restaurants/:restaurantPathParamB64`}>
 								<RestaurantTabsPage restaurants={restaurants} />
 							</Route>
 							<Route exact path='/mfsd'>

@@ -12,6 +12,11 @@ export type RestaurantModel = {
 	locations: RestaurantLocationModel[]
 }
 
+export type RestaurantPathParameterModel = {
+	restaurantUid: string
+	locationUid?: string
+}
+
 export type RestaurantLocationModel = {
 	uid: string
 	name: string

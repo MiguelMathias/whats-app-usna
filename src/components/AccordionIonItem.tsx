@@ -1,4 +1,4 @@
-import { IonIcon, IonItem, IonTitle } from '@ionic/react'
+import { IonIcon, IonItem, IonLabel, IonTitle } from '@ionic/react'
 import { chevronDownOutline, chevronForwardOutline } from 'ionicons/icons'
 import React, { PropsWithChildren, useState } from 'react'
 
@@ -7,16 +7,24 @@ interface AccordionIonItemProps extends PropsWithChildren<{}> {
 	icon?: string
 	initiallyOpen?: boolean
 	className?: string
+	label?: boolean
 }
 
-const AccordionIonItem: React.FC<AccordionIonItemProps> = ({ header, icon, initiallyOpen, className, children }) => {
+const AccordionIonItem: React.FC<AccordionIonItemProps> = ({
+	header,
+	icon,
+	initiallyOpen,
+	className,
+	children,
+	label,
+}) => {
 	const [showItem, setShowItem] = useState(initiallyOpen)
 
 	return (
 		<>
-			<IonItem button onClick={() => setShowItem(!showItem)}>
+			<IonItem className={className} button onClick={() => setShowItem(!showItem)}>
 				<IonIcon icon={showItem ? chevronDownOutline : chevronForwardOutline} />
-				<IonTitle>{header}</IonTitle>
+				{label ? <IonLabel>{header}</IonLabel> : <IonTitle>{header}</IonTitle>}
 				<IonIcon slot='end' icon={icon} />
 			</IonItem>
 			<div className={className}>{showItem ? children : <></>}</div>

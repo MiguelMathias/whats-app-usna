@@ -7,23 +7,11 @@ import { RestaurantBagItemModel, RestaurantItemModel, RestaurantModel } from '..
 type RestaurantMainMenuPageProps = {
 	restaurant: RestaurantModel
 	restaurantItems: RestaurantItemModel[]
-	locationName: string
-	setLocationName: (location: string) => void
 }
 
-const RestaurantMainMenuPage: React.FC<RestaurantMainMenuPageProps> = ({
-	restaurant,
-	restaurantItems,
-	locationName,
-	setLocationName,
-}) => (
+const RestaurantMainMenuPage: React.FC<RestaurantMainMenuPageProps> = ({ restaurant, restaurantItems }) => (
 	<IonPage>
-		<RestaurantPageHeader
-			headerText='Menu'
-			restaurant={restaurant}
-			locationName={locationName}
-			setLocationName={setLocationName}
-		/>
+		<RestaurantPageHeader headerText='Menu' restaurant={restaurant} />
 		<IonContent>
 			<RestaurantMenu
 				restaurant={restaurant}
