@@ -10,20 +10,13 @@ interface AccordionIonItemProps extends PropsWithChildren<{}> {
 	label?: boolean
 }
 
-const AccordionIonItem: React.FC<AccordionIonItemProps> = ({
-	header,
-	icon,
-	initiallyOpen,
-	className,
-	children,
-	label,
-}) => {
+const AccordionIonItem: React.FC<AccordionIonItemProps> = ({ header, icon, initiallyOpen, className, children, label }) => {
 	const [showItem, setShowItem] = useState(initiallyOpen)
 
 	return (
 		<>
 			<IonItem className={className} button onClick={() => setShowItem(!showItem)}>
-				<IonIcon icon={showItem ? chevronDownOutline : chevronForwardOutline} />
+				<IonIcon slot={label ? 'start' : ''} icon={showItem ? chevronDownOutline : chevronForwardOutline} />
 				{label ? <IonLabel>{header}</IonLabel> : <IonTitle>{header}</IonTitle>}
 				<IonIcon slot='end' icon={icon} />
 			</IonItem>

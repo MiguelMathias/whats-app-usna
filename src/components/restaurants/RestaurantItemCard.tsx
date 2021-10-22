@@ -2,20 +2,22 @@ import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardT
 import { deleteDoc, doc } from 'firebase/firestore'
 import { addOutline, createOutline, removeOutline } from 'ionicons/icons'
 import { useContext } from 'react'
+import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
-import { RestaurantBagItemModel, restaurantBagItemPrice, RestaurantModel } from '../../data/restaurants/Restaurant'
+import { RestaurantBagItemModel, restaurantBagItemPrice } from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { encodeB64Url } from '../../util/misc'
 import './RestaurantItemCard.scss'
 import RestaurantItemFavoriteButton from './RestaurantItemFavoriteButton'
 
 type RestaurantItemCardProps = {
-	restaurant: RestaurantModel
 	restaurantBagItem: RestaurantBagItemModel
+	userFavoriteItems: RestaurantBagItemModel[]
 	isOrder?: boolean
 }
 
-const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurant, restaurantBagItem, isOrder }) => {
+const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurantBagItem, userFavoriteItems, isOrder }) => {
+	const { restaurantPathParamB64 } = useParams<{ restaurantPathParamB64: string }>()
 	const { user } = useContext(AppContext)
 	const restaurantBagItemB64Url = encodeB64Url(restaurantBagItem)
 
@@ -29,17 +31,22 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurant, res
 						justifyContent: 'space-between',
 					}}
 				>
-					<IonRouterLink routerLink={`/restaurants/${restaurant.uid}/menu/${restaurantBagItemB64Url}`}>
+					<IonRouterLink routerLink={`/restaurants/${restaurantPathParamB64}/menu/${restaurantBagItemB64Url}`}>
 						<IonCardTitle class='ion-text-left'>{restaurantBagItem.restaurantItem.name}</IonCardTitle>
 					</IonRouterLink>
 					<IonButtons>
-						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} />
+						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} userFavoriteItems={userFavoriteItems} />
 					</IonButtons>
 				</div>
 			</IonCardHeader>
 			<IonCardContent>
 				{/* add image slides */}
-				<IonLabel class='ion-text-wrap'>{restaurantBagItem.restaurantItem.ingredients.map((ingredient) => ingredient.name).join(', ')}</IonLabel>
+				<IonLabel class='ion-text-wrap'>
+					{restaurantBagItem.restaurantItem.ingredients
+						.filter((_, i) => restaurantBagItem.restaurantItem.selectedIngredients.includes(i))
+						.map((ingredient) => ingredient.name)
+						.join(', ')}
+				</IonLabel>
 				<div
 					style={{
 						display: 'flex',
@@ -60,7 +67,7 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurant, res
 					)}
 					<IonLabel color='dark'>${restaurantBagItemPrice(restaurantBagItem)}</IonLabel>
 					<IonButtons slot='end'>
-						<IonButton routerLink={`/restaurants/${restaurant.uid}/menu/${restaurantBagItemB64Url}`}>
+						<IonButton routerLink={`/restaurants/${restaurantPathParamB64}/menu/${restaurantBagItemB64Url}`}>
 							<IonIcon slot='icon-only' icon={restaurantBagItem.uid && !isOrder ? createOutline : addOutline} />
 						</IonButton>
 					</IonButtons>

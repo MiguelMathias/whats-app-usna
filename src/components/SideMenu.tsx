@@ -71,11 +71,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 						<IonMenuToggle autoHide={false}>
 							<IonIcon slot='start' icon={page.icon} />
 							<AccordionIonItem
-								className={
-									page.subPages.find((subPage) => location.pathname.startsWith(subPage.path))
-										? 'selected'
-										: undefined
-								}
+								initiallyOpen
+								className={page.subPages.find((subPage) => location.pathname.startsWith(subPage.path)) ? 'selected' : undefined}
 								header={page.title}
 								label
 							>
@@ -84,9 +81,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 										<IonItem
 											routerLink={subPage.path}
 											routerDirection='root'
-											className={
-												location.pathname.startsWith(subPage.path) ? 'selected' : undefined
-											}
+											className={location.pathname.startsWith(subPage.path) ? 'selected' : undefined}
 										>
 											<IonIcon slot='start' icon={subPage.icon} />
 											<IonLabel>{subPage.title}</IonLabel>
@@ -98,11 +93,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 					) : (
 						<>
 							<IonIcon slot='start' icon={page.icon} />
-							<IonItem
-								routerLink={page.path}
-								routerDirection='root'
-								className={location.pathname.startsWith(page.path) ? 'selected' : undefined}
-							>
+							<IonItem routerLink={page.path} routerDirection='root' className={location.pathname.startsWith(page.path) ? 'selected' : undefined}>
 								{page.icon && <IonIcon slot='start' icon={page.icon} />}
 								<IonLabel>{page.title}</IonLabel>
 							</IonItem>

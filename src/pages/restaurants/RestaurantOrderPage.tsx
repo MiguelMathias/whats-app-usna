@@ -20,21 +20,22 @@ import { useContext } from 'react'
 import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import RestaurantMenu from '../../components/restaurants/RestaurantMenu'
-import { orderTotalPrice, RestaurantModel, RestaurantOrderModel } from '../../data/restaurants/Restaurant'
+import { orderTotalPrice, RestaurantBagItemModel, RestaurantOrderModel } from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { decodeB64Url, formatDateDefault } from '../../util/misc'
 import LoadingPage from '../LoadingPage'
 
 type RestaurantOrderPageProps = {
-	restaurant: RestaurantModel
-	orders: RestaurantOrderModel[]
+	userFavoriteItems: RestaurantBagItemModel[]
+	userOrders: RestaurantOrderModel[]
 }
 
-const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ restaurant, orders }) => {
+const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ userFavoriteItems, userOrders }) => {
+	const { restaurantPathParamB64 } = useParams<{ restaurantPathParamB64: string }>()
 	const { user } = useContext(AppContext)
 	const { restaurantOrderTSB64 } = useParams<{ restaurantOrderTSB64: string }>()
 	const restaurantOrderTS = decodeB64Url<Timestamp>(restaurantOrderTSB64)
-	const restaurantOrder = orders.find((order) => order.submitted?.isEqual(restaurantOrderTS))
+	const restaurantOrder = userOrders.find((order) => order.submitted?.isEqual(restaurantOrderTS))
 	const [showAddSuccessToast, _] = useIonToast()
 
 	if (!restaurantOrder) return <LoadingPage />
@@ -44,22 +45,15 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ restaurant, o
 			<IonHeader>
 				<IonToolbar>
 					<IonButtons slot='start'>
-						<IonBackButton defaultHref={`/restaurants/${restaurant.uid}/orders`} />
+						<IonBackButton defaultHref={`/restaurants/${restaurantPathParamB64}/orders`} />
 					</IonButtons>
-					<IonTitle>
-						{restaurantOrder.submitted
-							? formatDateDefault(restaurantOrder.submitted?.toDate())
-							: 'Date of order unknown'}
-					</IonTitle>
+					<IonTitle>{restaurantOrder.submitted ? formatDateDefault(restaurantOrder.submitted?.toDate()) : 'Date of order unknown'}</IonTitle>
 					<IonButtons slot='end'>
 						<IonButton
 							onClick={() => {
 								if (user) {
 									restaurantOrder.restaurantBagItems.forEach((restaurantBagItem) =>
-										setDoc(
-											doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid),
-											restaurantBagItem
-										)
+										setDoc(doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid), restaurantBagItem)
 									)
 									showAddSuccessToast({
 										header: 'Added Items',
@@ -108,17 +102,11 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ restaurant, o
 					{restaurantOrder.scheduledPickup && (
 						<IonItem>
 							<IonLabel>Scheduled Pickup</IonLabel>
-							<IonLabel slot='end'>
-								{formatDateDefault(restaurantOrder.scheduledPickup.toDate())}
-							</IonLabel>
+							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.scheduledPickup.toDate())}</IonLabel>
 						</IonItem>
 					)}
 				</IonList>
-				<RestaurantMenu
-					restaurant={restaurant}
-					restaurantBagItems={restaurantOrder.restaurantBagItems ?? []}
-					isOrder
-				/>
+				<RestaurantMenu restaurantBagItems={restaurantOrder.restaurantBagItems ?? []} userFavoriteItems={userFavoriteItems} isOrder />
 			</IonContent>
 		</IonPage>
 	)

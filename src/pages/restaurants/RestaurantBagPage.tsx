@@ -27,6 +27,7 @@ import {
 	getRestaurantHours,
 	orderReadyMinMinutes,
 	orderTotalPrice,
+	RestaurantBagItemModel,
 	RestaurantModel,
 	RestaurantOrderModel,
 } from '../../data/restaurants/Restaurant'
@@ -35,18 +36,17 @@ import { useForceUpdate } from '../../util/hooks'
 
 type RestaurantBagPageProps = {
 	restaurant: RestaurantModel
+	userBagItems: RestaurantBagItemModel[]
+	userFavoriteItems: RestaurantBagItemModel[]
+	locationUid?: string
 }
 
-const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => {
-	const { user, userBag, userData } = useContext(AppContext)
+const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userBagItems, userFavoriteItems, locationUid }) => {
+	const { user, userData } = useContext(AppContext)
+	const locationName = restaurant.locations.find((location) => location.uid === locationUid)?.name
 
-	const bagItems = () =>
-		userBag.filter((restaurantBagItem) => restaurantBagItem.restaurantItem.restaurantUid === restaurant.uid)
 	const minPickupTime = () =>
-		format(
-			roundToNearestMinutes(addMinutes(Date.now(), orderReadyMinMinutes(bagItems())), { nearestTo: 15 }),
-			"yyyy-MM-dd'T'HH:mm:ss"
-		)
+		format(roundToNearestMinutes(addMinutes(Date.now(), orderReadyMinMinutes(userBagItems)), { nearestTo: 15 }), "yyyy-MM-dd'T'HH:mm:ss")
 
 	const [chosenPickupTime, setChosenPickupTime] = useState(minPickupTime())
 
@@ -54,13 +54,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 
 	const forceUpdate = useForceUpdate()
 
-	useEffect(
-		() =>
-			setChosenPickupTime(
-				new Date(chosenPickupTime) < new Date(minPickupTime()) ? minPickupTime() : chosenPickupTime
-			),
-		[bagItems().join()]
-	)
+	useEffect(() => setChosenPickupTime(new Date(chosenPickupTime) < new Date(minPickupTime()) ? minPickupTime() : chosenPickupTime), [userBagItems.join()])
 
 	return (
 		<IonPage>
@@ -70,11 +64,11 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 						<IonMenuButton />
 					</IonButtons>
 					<IonTitle>
-						{restaurant.name} Bag: ${orderTotalPrice(bagItems())}
+						{restaurant.name + (locationName ? ` ${locationName}` : '')} Bag: ${orderTotalPrice(userBagItems)}
 					</IonTitle>
 					<IonButtons slot='end'>
 						<IonButton
-							disabled={!bagItems().length}
+							disabled={!userBagItems.length}
 							onClick={async () => {
 								if (userData && user) {
 									const newDoc = doc(collection(firestore, 'users', user.uid, 'orders'))
@@ -82,7 +76,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 										displayName: user.displayName,
 										userUid: user.uid,
 										restaurantUid: restaurant.uid,
-										restaurantBagItems: bagItems(),
+										restaurantBagItems: userBagItems,
 										submitted: serverTimestamp(),
 										scheduledPickup: Timestamp.fromDate(new Date(chosenPickupTime)),
 										uid: newDoc.id,
@@ -103,10 +97,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 										header: 'Order submitted',
 										color: 'success',
 										duration: 2000,
-										message: `Order will be ready at approximately ${format(
-											new Date(chosenPickupTime),
-											'H:mm'
-										)}`,
+										message: `Order will be ready at approximately ${format(new Date(chosenPickupTime), 'H:mm')}`,
 									})
 								}
 							}}
@@ -120,7 +111,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 				<IonItem>
 					<IonLabel>Pickup Time</IonLabel>
 					<IonDatetime
-						disabled={!bagItems().length}
+						disabled={!userBagItems.length}
 						displayFormat='H:mm D MMM'
 						min={minPickupTime()}
 						value={chosenPickupTime}
@@ -146,7 +137,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant }) => 
 						}}
 					/>
 				</IonItem>
-				<RestaurantMenu restaurant={restaurant} restaurantBagItems={bagItems() ?? []} />
+				<RestaurantMenu restaurantBagItems={userBagItems ?? []} userFavoriteItems={userFavoriteItems} />
 			</IonContent>
 		</IonPage>
 	)

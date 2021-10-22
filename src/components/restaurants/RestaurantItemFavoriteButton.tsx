@@ -9,17 +9,18 @@ import { object_equals } from '../../util/misc'
 
 type RestaurantItemFavoriteButtonProps = {
 	restaurantBagItem: RestaurantBagItemModel
+	userFavoriteItems: RestaurantBagItemModel[]
 	slot?: string
 	compByDetail?: boolean
 }
 
-const RestaurantItemFavoriteButton: React.FC<RestaurantItemFavoriteButtonProps> = ({ restaurantBagItem, slot, compByDetail }) => {
-	const { user, userFavorites } = useContext(AppContext)
+const RestaurantItemFavoriteButton: React.FC<RestaurantItemFavoriteButtonProps> = ({ restaurantBagItem, userFavoriteItems, slot, compByDetail }) => {
+	const { user } = useContext(AppContext)
 
 	const isFavorite = () =>
 		compByDetail
-			? userFavorites.filter((favoriteItem) => object_equals({ ...favoriteItem, uid: '' }, { ...restaurantBagItem, uid: '' })).length > 0
-			: userFavorites.map((favItem) => favItem.restaurantItem.uid).includes(restaurantBagItem.restaurantItem.uid)
+			? userFavoriteItems.filter((favoriteItem) => object_equals({ ...favoriteItem, uid: '' }, { ...restaurantBagItem, uid: '' })).length > 0
+			: userFavoriteItems.map((favItem) => favItem.restaurantItem.uid).includes(restaurantBagItem.restaurantItem.uid)
 
 	return (
 		<IonButtons slot={slot}>

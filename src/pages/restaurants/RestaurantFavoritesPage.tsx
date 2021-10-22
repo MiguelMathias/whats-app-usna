@@ -1,26 +1,20 @@
 import { IonContent, IonPage } from '@ionic/react'
-import { useContext } from 'react'
-import { AppContext } from '../../AppContext'
 import RestaurantMenu from '../../components/restaurants/RestaurantMenu'
 import RestaurantPageHeader from '../../components/restaurants/RestaurantPageHeader'
-import { RestaurantModel } from '../../data/restaurants/Restaurant'
+import { RestaurantBagItemModel, RestaurantModel } from '../../data/restaurants/Restaurant'
 
 type RestaurantFavoritesPageProps = {
 	restaurant: RestaurantModel
+	userFavoriteItems: RestaurantBagItemModel[]
+	locationUid?: string
 }
 
-const RestaurantFavoritesPage: React.FC<RestaurantFavoritesPageProps> = ({ restaurant }) => {
-	const { userFavorites } = useContext(AppContext)
+const RestaurantFavoritesPage: React.FC<RestaurantFavoritesPageProps> = ({ restaurant, userFavoriteItems, locationUid }) => {
 	return (
 		<IonPage>
-			<RestaurantPageHeader headerText='Favorites' restaurant={restaurant} />
+			<RestaurantPageHeader headerText='Favorites' restaurant={restaurant} locationUid={locationUid} />
 			<IonContent>
-				<RestaurantMenu
-					restaurant={restaurant}
-					restaurantBagItems={userFavorites.filter(
-						(restaurantBagItem) => restaurantBagItem.restaurantItem.restaurantUid === restaurant.uid
-					)}
-				/>
+				<RestaurantMenu restaurantBagItems={userFavoriteItems} userFavoriteItems={userFavoriteItems} />
 			</IonContent>
 		</IonPage>
 	)

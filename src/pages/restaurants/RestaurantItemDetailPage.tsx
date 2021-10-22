@@ -20,39 +20,39 @@ import {
 } from '@ionic/react'
 import { collection, doc, setDoc } from 'firebase/firestore'
 import { bagAddOutline } from 'ionicons/icons'
-import { useContext, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import RestaurantItemFavoriteButton from '../../components/restaurants/RestaurantItemFavoriteButton'
-import { RestaurantBagItemModel, restaurantBagItemPrice, RestaurantItemModel, RestaurantModel } from '../../data/restaurants/Restaurant'
+import { RestaurantBagItemModel, restaurantBagItemPrice } from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { decodeB64Url } from '../../util/misc'
 
 type RestaurantItemDetailPageProps = {
-	restaurant: RestaurantModel
-	restaurantItems: RestaurantItemModel[]
+	userFavoriteItems: RestaurantBagItemModel[]
 }
 
-const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ restaurant, restaurantItems }) => {
+const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ userFavoriteItems }) => {
+	const { restaurantPathParamB64 } = useParams<{ restaurantPathParamB64: string }>()
 	const { user, userData } = useContext(AppContext)
 	const router = useIonRouter()
 	const { restaurantBagItemB64 } = useParams<{ restaurantBagItemB64: string }>()
-	const initRestaurantBagItem = decodeB64Url<RestaurantBagItemModel>(restaurantBagItemB64)
+	const [restaurantBagItem, setRestaurantBagItem] = useState<RestaurantBagItemModel>(decodeB64Url<RestaurantBagItemModel>(restaurantBagItemB64))
 
-	const [restaurantBagItem, setRestaurantBagItem] = useState<RestaurantBagItemModel>(initRestaurantBagItem)
+	const optionsInitiallySelected = useRef(restaurantBagItem.restaurantItem.options.map((option) => option.selected))
 
 	return (
 		<IonPage>
 			<IonHeader>
 				<IonToolbar>
 					<IonButtons slot='start'>
-						<IonBackButton defaultHref={`/restaurants/${restaurant.uid}/menu`} />
+						<IonBackButton defaultHref={`/restaurants/${restaurantPathParamB64}/menu`} />
 					</IonButtons>
 					<IonTitle>
 						{restaurantBagItem.restaurantItem.name}: ${restaurantBagItemPrice(restaurantBagItem)}
 					</IonTitle>
 					<IonButtons slot='end'>
-						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} compByDetail />
+						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} userFavoriteItems={userFavoriteItems} compByDetail />
 						<IonButton
 							onClick={async () => {
 								if (userData && user) {
@@ -129,7 +129,7 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ res
 												slot='start'
 												value={j}
 												onClick={() => {
-													if (option.selected === j) option.selected = -1
+													if (option.selected === j && optionsInitiallySelected.current[j] === -1) option.selected = -1
 													else option.selected = j
 													setRestaurantBagItem({
 														...restaurantBagItem,

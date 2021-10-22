@@ -7,14 +7,15 @@ import { RestaurantBagItemModel, RestaurantItemModel, RestaurantModel } from '..
 type RestaurantMainMenuPageProps = {
 	restaurant: RestaurantModel
 	restaurantItems: RestaurantItemModel[]
+	userFavoriteItems: RestaurantBagItemModel[]
+	locationUid?: string
 }
 
-const RestaurantMainMenuPage: React.FC<RestaurantMainMenuPageProps> = ({ restaurant, restaurantItems }) => (
+const RestaurantMainMenuPage: React.FC<RestaurantMainMenuPageProps> = ({ restaurant, restaurantItems, userFavoriteItems, locationUid }) => (
 	<IonPage>
-		<RestaurantPageHeader headerText='Menu' restaurant={restaurant} />
+		<RestaurantPageHeader headerText='Menu' restaurant={restaurant} locationUid={locationUid} />
 		<IonContent>
 			<RestaurantMenu
-				restaurant={restaurant}
 				restaurantBagItems={restaurantItems.map(
 					(restaurantItem) =>
 						({
@@ -23,6 +24,7 @@ const RestaurantMainMenuPage: React.FC<RestaurantMainMenuPageProps> = ({ restaur
 							uid: '',
 						} as RestaurantBagItemModel)
 				)}
+				userFavoriteItems={userFavoriteItems}
 			/>
 		</IonContent>
 	</IonPage>

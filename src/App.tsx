@@ -22,7 +22,7 @@ import { useEffectOnce } from 'react-use'
 import { AppContext, AppContextType } from './AppContext'
 import SideMenu from './components/SideMenu'
 import { UserDataModel } from './data/account/User'
-import { RestaurantBagItemModel, RestaurantModel } from './data/restaurants/Restaurant'
+import { RestaurantModel } from './data/restaurants/Restaurant'
 import { auth, firestore } from './Firebase'
 import Account from './pages/account/Account'
 import Home from './pages/Home'
@@ -33,8 +33,6 @@ import './theme/variables.css'
 const App: React.FC = () => {
 	const [user, setUser] = useState<User | undefined>(undefined)
 	const [userData, setUserData] = useState<UserDataModel | undefined>(undefined)
-	const [userFavorites, setUserFavorites] = useState<RestaurantBagItemModel[]>([])
-	const [userBag, setUserBag] = useState<RestaurantBagItemModel[]>([])
 	const [restaurants, setRestaurants] = useState<RestaurantModel[]>([])
 	const [showBadAccountToast, _] = useIonToast()
 
@@ -43,10 +41,6 @@ const App: React.FC = () => {
 		setUser,
 		userData,
 		setUserData,
-		userFavorites,
-		setUserFavorites,
-		userBag,
-		setUserBag,
 	} as AppContextType
 
 	useEffect(() => {
@@ -64,28 +58,17 @@ const App: React.FC = () => {
 						displayName: user.displayName,
 					} as UserDataModel)
 			})
-			const userFavoritesUnsub = onSnapshot(collection(firestore, 'users', user.uid, 'favorites'), (snapshot) =>
-				setUserFavorites(snapshot.docs.map((doc) => doc.data() as RestaurantBagItemModel))
-			)
-			const userBagUnsub = onSnapshot(collection(firestore, 'users', user.uid, 'bag'), (snapshot) =>
-				setUserBag(snapshot.docs.map((doc) => doc.data() as RestaurantBagItemModel))
-			)
 
 			return () => {
 				userDataUnsub()
-				userFavoritesUnsub()
-				userBagUnsub()
 			}
 		} else {
 			setUserData(undefined)
-			setUserFavorites([])
-			setUserBag([])
 		}
 	}, [user?.uid])
 
 	onAuthStateChanged(auth, (user) => {
-		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '') /* /m[1-9]{6}@usna\.edu/.test(user?.email ?? '') */)
-			setUser(user ?? undefined)
+		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '') /* /m[1-9]{6}@usna\.edu/.test(user?.email ?? '') */) setUser(user ?? undefined)
 		else if (user) {
 			showBadAccountToast({
 				header: 'Wrong Account!',

@@ -1,16 +1,16 @@
 import { IonItemDivider, IonLabel } from '@ionic/react'
 import React from 'react'
-import { allCategories, RestaurantBagItemModel, RestaurantModel } from '../../data/restaurants/Restaurant'
+import { allCategories, RestaurantBagItemModel } from '../../data/restaurants/Restaurant'
 import { capitalize } from '../../util/misc'
 import RestaurantItemCard from './RestaurantItemCard'
 
 type RestaurantMenuProps = {
-	restaurant: RestaurantModel
 	restaurantBagItems: RestaurantBagItemModel[]
+	userFavoriteItems: RestaurantBagItemModel[]
 	isOrder?: boolean
 }
 
-const RestaurantMenu: React.FC<RestaurantMenuProps> = ({ restaurant, restaurantBagItems, isOrder }) => (
+const RestaurantMenu: React.FC<RestaurantMenuProps> = ({ restaurantBagItems, userFavoriteItems, isOrder }) => (
 	<>
 		{allCategories(restaurantBagItems)?.map((category, i) => (
 			<React.Fragment key={i}>
@@ -34,12 +34,7 @@ const RestaurantMenu: React.FC<RestaurantMenuProps> = ({ restaurant, restaurantB
 						.map((restaurantBagItemPair, i) => (
 							<div key={i}>
 								{restaurantBagItemPair.map((restaurantBagItem, j) => (
-									<RestaurantItemCard
-										key={j}
-										restaurant={restaurant}
-										restaurantBagItem={restaurantBagItem}
-										isOrder={isOrder}
-									/>
+									<RestaurantItemCard key={j} restaurantBagItem={restaurantBagItem} userFavoriteItems={userFavoriteItems} isOrder={isOrder} />
 								))}
 							</div>
 						))}
