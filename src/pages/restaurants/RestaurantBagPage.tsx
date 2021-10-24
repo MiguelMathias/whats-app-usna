@@ -43,7 +43,7 @@ type RestaurantBagPageProps = {
 
 const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userBagItems, userFavoriteItems, locationUid }) => {
 	const { user, userData } = useContext(AppContext)
-	const locationName = restaurant.locations.find((location) => location.uid === locationUid)?.name
+	const location = restaurant.locations.find((location) => location.uid === locationUid)
 
 	const minPickupTime = () =>
 		format(roundToNearestMinutes(addMinutes(Date.now(), orderReadyMinMinutes(userBagItems)), { nearestTo: 15 }), "yyyy-MM-dd'T'HH:mm:ss")
@@ -64,7 +64,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userB
 						<IonMenuButton />
 					</IonButtons>
 					<IonTitle>
-						{restaurant.name + (locationName ? ` ${locationName}` : '')} Bag: ${orderTotalPrice(userBagItems)}
+						{restaurant.name + (location?.name ? ` ${location.name}` : '')} Bag: ${orderTotalPrice(userBagItems)}
 					</IonTitle>
 					<IonButtons slot='end'>
 						<IonButton
@@ -81,6 +81,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userB
 										scheduledPickup: Timestamp.fromDate(new Date(chosenPickupTime)),
 										uid: newDoc.id,
 									} as RestaurantOrderModel
+									if (location?.uid) restaurantOrder.restaurantLocationUid = location?.uid
 									await setDoc(newDoc, restaurantOrder)
 									if (user)
 										(

@@ -59,7 +59,7 @@ export type RestaurantOrderModel = {
 	displayName: string
 	userUid: string
 	restaurantUid: string
-	restaurantLocation?: string
+	restaurantLocationUid?: string
 	restaurantBagItems: RestaurantBagItemModel[]
 	scheduledPickup?: Timestamp
 	submitted?: Timestamp
