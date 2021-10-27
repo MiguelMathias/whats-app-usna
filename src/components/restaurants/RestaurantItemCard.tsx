@@ -9,6 +9,7 @@ import { firestore } from '../../Firebase'
 import { encodeB64Url } from '../../util/misc'
 import './RestaurantItemCard.scss'
 import RestaurantItemFavoriteButton from './RestaurantItemFavoriteButton'
+import RestaurantItemImgSlides from './RestaurantItemImgSlides'
 
 type RestaurantItemCardProps = {
 	restaurantBagItem: RestaurantBagItemModel
@@ -23,6 +24,7 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurantBagIt
 
 	return (
 		<IonCard className='restaurant-item-card'>
+			<RestaurantItemImgSlides restaurantItem={restaurantBagItem.restaurantItem} maxImgHeight={250} />
 			<IonCardHeader>
 				<div
 					style={{
@@ -43,7 +45,7 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurantBagIt
 				{/* add image slides */}
 				<IonLabel class='ion-text-wrap'>
 					{restaurantBagItem.restaurantItem.ingredients
-						.filter((_, i) => restaurantBagItem.restaurantItem.selectedIngredients.includes(i))
+						.filter((ingredient) => ingredient.selected)
 						.map((ingredient) => ingredient.name)
 						.join(', ')}
 				</IonLabel>

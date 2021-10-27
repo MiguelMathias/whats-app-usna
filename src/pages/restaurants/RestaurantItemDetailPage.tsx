@@ -20,11 +20,12 @@ import {
 } from '@ionic/react'
 import { collection, doc, setDoc } from 'firebase/firestore'
 import { bagAddOutline } from 'ionicons/icons'
-import { useContext, useRef, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import RestaurantItemFavoriteButton from '../../components/restaurants/RestaurantItemFavoriteButton'
-import { RestaurantBagItemModel, restaurantBagItemPrice } from '../../data/restaurants/Restaurant'
+import RestaurantItemImgSlides from '../../components/restaurants/RestaurantItemImgSlides'
+import { RestaurantBagItemModel, restaurantBagItemPrice, RestaurantItemOptionSelectableModel } from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { decodeB64Url } from '../../util/misc'
 
@@ -38,8 +39,6 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 	const router = useIonRouter()
 	const { restaurantBagItemB64 } = useParams<{ restaurantBagItemB64: string }>()
 	const [restaurantBagItem, setRestaurantBagItem] = useState<RestaurantBagItemModel>(decodeB64Url<RestaurantBagItemModel>(restaurantBagItemB64))
-
-	const optionsInitiallySelected = useRef(restaurantBagItem.restaurantItem.options.map((option) => option.selected))
 
 	return (
 		<IonPage>
@@ -74,6 +73,7 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 				</IonToolbar>
 			</IonHeader>
 			<IonContent>
+				<RestaurantItemImgSlides restaurantItem={restaurantBagItem.restaurantItem} maxImgHeight={400} />
 				<IonList lines='none'>
 					{restaurantBagItem.restaurantItem.description && (
 						<IonItem>
@@ -96,16 +96,11 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 						<IonItem key={i}>
 							<IonCheckbox
 								slot='start'
-								checked={restaurantBagItem.restaurantItem.selectedIngredients.includes(i)}
+								checked={ingredient.selected}
 								onIonChange={(e) => {
+									ingredient.selected = e.detail.value
 									setRestaurantBagItem({
 										...restaurantBagItem,
-										restaurantItem: {
-											...restaurantBagItem.restaurantItem,
-											selectedIngredients: restaurantBagItem.restaurantItem.selectedIngredients.includes(i)
-												? restaurantBagItem.restaurantItem.selectedIngredients.filter((ingIndex) => ingIndex !== i)
-												: restaurantBagItem.restaurantItem.selectedIngredients.concat(i),
-										},
 									})
 								}}
 							/>
@@ -122,15 +117,19 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 						<IonItem key={i}>
 							<p slot='start'>{option.name}</p>
 							<IonList style={{ width: '100%' }}>
-								<IonRadioGroup value={option.selected}>
+								<IonRadioGroup value={option.selectable.findIndex((select) => select.selected)}>
 									{option.selectable.map((select, j) => (
 										<IonItem key={j}>
 											<IonRadio
 												slot='start'
 												value={j}
 												onClick={() => {
-													if (option.selected === j && optionsInitiallySelected.current[j] === -1) option.selected = -1
-													else option.selected = j
+													option.selectable = option.selectable.map(
+														(select, k) =>
+															(k === j
+																? { ...select, selected: true }
+																: { ...select, selected: false }) as RestaurantItemOptionSelectableModel
+													)
 													setRestaurantBagItem({
 														...restaurantBagItem,
 													})

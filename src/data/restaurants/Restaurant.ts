@@ -29,7 +29,6 @@ export type RestaurantItemModel = {
 	price: number
 	minutesToReady: number
 	ingredients: RestaurantItemIngredientModel[]
-	selectedIngredients: number[]
 	options: RestaurantItemOptionModel[]
 	uid: string
 	description?: string
@@ -39,14 +38,14 @@ export type RestaurantItemModel = {
 export type RestaurantItemOptionModel = {
 	name: string
 	selectable: RestaurantItemOptionSelectableModel[]
-	selected?: number
 }
 
-export type RestaurantItemOptionSelectableModel = { name: string; price: number }
+export type RestaurantItemOptionSelectableModel = { name: string; price: number; selected: boolean }
 
 export type RestaurantItemIngredientModel = {
 	name: string
 	price: number //the price increase for adding this ingredient
+	selected: boolean
 }
 
 export type RestaurantBagItemModel = {
@@ -76,11 +75,11 @@ export const allCategories = (restaurantItems?: RestaurantItemModel[] | Restaura
 export const restaurantBagItemPrice = (restaurantBagItem: RestaurantBagItemModel) =>
 	restaurantBagItem.restaurantItem.price +
 	restaurantBagItem.restaurantItem.ingredients
-		.filter((_, i) => restaurantBagItem.restaurantItem.selectedIngredients.includes(i))
+		.filter((ingredient) => ingredient.selected)
 		.map((ingredient) => ingredient.price ?? 0)
 		.reduce((prev, cur) => prev + cur, 0) +
 	restaurantBagItem.restaurantItem.options
-		.map((option) => (option.selected && option.selected >= 0 ? option.selectable[option.selected].price ?? 0 : 0))
+		.map((option) => option.selectable.find((select) => select.selected)?.price ?? 0)
 		.reduce((cur, prev) => cur + prev, 0)
 
 export const orderTotalPrice = (restaurantOrder: RestaurantOrderModel | RestaurantBagItemModel[]) =>
