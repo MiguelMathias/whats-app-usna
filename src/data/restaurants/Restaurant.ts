@@ -65,7 +65,6 @@ export type RestaurantOrderModel = {
 	accepted?: Timestamp
 	rejected?: Timestamp
 	pickupReady?: Timestamp
-	fulfilled?: Timestamp
 	uid: string
 }
 
