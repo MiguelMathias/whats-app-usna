@@ -98,7 +98,7 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 								slot='start'
 								checked={ingredient.selected}
 								onIonChange={(e) => {
-									ingredient.selected = e.detail.value
+									ingredient.selected = e.detail.checked
 									setRestaurantBagItem({
 										...restaurantBagItem,
 									})
