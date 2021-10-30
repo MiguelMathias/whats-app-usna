@@ -93,10 +93,10 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ userFavoriteI
 							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.rejected.toDate())}</IonLabel>
 						</IonItem>
 					)}
-					{restaurantOrder.fulfilled && (
+					{restaurantOrder.pickupReady && (
 						<IonItem>
 							<IonLabel>Fulfilled</IonLabel>
-							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.fulfilled.toDate())}</IonLabel>
+							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.pickupReady?.toDate())}</IonLabel>
 						</IonItem>
 					)}
 					{restaurantOrder.scheduledPickup && (
