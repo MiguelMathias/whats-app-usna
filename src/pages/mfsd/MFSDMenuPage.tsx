@@ -148,7 +148,7 @@ const MFSDMenuPage: React.FC = () => {
 																<IonIcon
 																	slot='icon-only'
 																	icon={alertCircleOutline}
-																	color='danger'
+																	color='warning'
 																/>
 															</IonButton>
 														)}
