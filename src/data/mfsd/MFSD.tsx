@@ -4,9 +4,9 @@ export type WeekModel = {
 
 export type DayModel = {
 	name: string
-	breakfast: MealModel
-	lunch: MealModel
-	dinner: MealModel
+	breakfast?: MealModel
+	lunch?: MealModel
+	dinner?: MealModel
 }
 
 export type MealModel =
@@ -29,10 +29,10 @@ export type MacrosModel = {
 	proteinG?: number
 }
 
-export const mealTotals = (meal: MealModel) =>
-	meal === "King's Court"
+export const mealTotals = (meal?: MealModel) =>
+	meal === "King's Court" || !meal
 		? ({} as MacrosModel)
-		: meal.mealItems
+		: meal?.mealItems
 				.map((mealItem) => mealItem.macros)
 				.reduce(
 					(prev, cur) =>

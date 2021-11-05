@@ -1,3 +1,4 @@
+import { getMode } from '@ionic/core'
 import {
 	IonButton,
 	IonButtons,
@@ -24,6 +25,7 @@ const MFSDMenuPage: React.FC = () => {
 	const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 	const [week] = useSubDoc<WeekModel>('mfsd', 'khMenu')
 	const [macrosForInfo, setMacrosForInfo] = useState<MacrosModel>()
+	const [allergensForInfo, setAllergensForInfo] = useState<string>()
 	const [showInfoPopover, dismissInfoPopover] = useIonPopover(
 		<IonList>
 			<IonItem>
@@ -60,7 +62,7 @@ const MFSDMenuPage: React.FC = () => {
 				</IonToolbar>
 			</IonHeader>
 			<IonContent>
-				<IonList>
+				<IonList lines='none'>
 					{week?.days.map((day, i) => (
 						<AccordionIonItem
 							key={i}
@@ -73,8 +75,10 @@ const MFSDMenuPage: React.FC = () => {
 								{[day.breakfast, day.lunch, day.dinner].map((meal, i) => (
 									<React.Fragment key={i}>
 										<IonItemDivider>
-											<IonLabel>{['Breakfast', 'Lunch', 'Dinner'][i]}:</IonLabel>
-											{meal !== "King's Court" && meal?.mealItems.length > 0 && (
+											<IonLabel color='dark'>
+												<IonTitle>{['Breakfast', 'Lunch', 'Dinner'][i]}</IonTitle>
+											</IonLabel>
+											{meal !== "King's Court" && (meal?.mealItems.length ?? 0) > 0 && (
 												<IonButtons slot='end'>
 													<IonButton
 														onClick={(e) => {
@@ -89,12 +93,16 @@ const MFSDMenuPage: React.FC = () => {
 															})
 														}}
 													>
-														<IonIcon slot='icon-only' icon={informationCircleOutline} />
+														<IonIcon
+															color={getMode() === 'ios' ? 'primary' : 'dark'}
+															slot='icon-only'
+															icon={informationCircleOutline}
+														/>
 													</IonButton>
 												</IonButtons>
 											)}
 										</IonItemDivider>
-										{meal === "King's Court" || meal?.mealItems.length === 0 ? (
+										{meal === "King's Court" || !meal || meal?.mealItems.length === 0 ? (
 											<IonItem>
 												<IonLabel>{meal}</IonLabel>
 											</IonItem>
@@ -130,10 +138,12 @@ const MFSDMenuPage: React.FC = () => {
 									</React.Fragment>
 								))}
 								{!![day.breakfast, day.lunch, day.dinner].find(
-									(day) => day !== "King's Court" && day?.mealItems.length > 0
+									(meal) => meal !== "King's Court" && (meal?.mealItems.length ?? 0) > 0
 								) && (
 									<IonItemDivider>
-										<IonLabel>Daily Totals</IonLabel>
+										<IonLabel color='dark'>
+											<b>Daily Totals</b>
+										</IonLabel>
 										<IonButtons slot='end'>
 											<IonButton
 												onClick={(e) => {
@@ -147,7 +157,11 @@ const MFSDMenuPage: React.FC = () => {
 													})
 												}}
 											>
-												<IonIcon slot='icon-only' icon={informationCircleOutline} />
+												<IonIcon
+													color={getMode() === 'ios' ? 'primary' : 'dark'}
+													slot='icon-only'
+													icon={informationCircleOutline}
+												/>
 											</IonButton>
 										</IonButtons>
 									</IonItemDivider>
