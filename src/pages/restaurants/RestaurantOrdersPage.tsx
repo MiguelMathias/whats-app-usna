@@ -15,10 +15,16 @@ const RestaurantOrdersPage: React.FC<RestaurantOrdersPageProps> = ({ restaurant,
 	return (
 		<IonPage>
 			<RestaurantPageHeader headerText='Orders' restaurant={restaurant} locationUid={locationUid} />
-			<IonContent>
+			<IonContent fullscreen>
 				<IonList>
 					{orders.map((order, index) => (
-						<IonItem key={index} detail routerLink={`/restaurants/${restaurantPathParamB64}/orders/${encodeB64Url(order.submitted)}`}>
+						<IonItem
+							key={index}
+							detail
+							routerLink={`/restaurants/${restaurantPathParamB64}/orders/${encodeB64Url(
+								order.submitted
+							)}`}
+						>
 							<IonLabel>{order.submitted ? formatDateDefault(order.submitted.toDate()) : ''}</IonLabel>
 						</IonItem>
 					))}

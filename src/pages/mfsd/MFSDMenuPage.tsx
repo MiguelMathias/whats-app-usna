@@ -1,4 +1,3 @@
-import { getMode } from '@ionic/core'
 import {
 	IonButton,
 	IonButtons,
@@ -9,45 +8,66 @@ import {
 	IonItemDivider,
 	IonLabel,
 	IonList,
+	IonListHeader,
 	IonMenuButton,
 	IonPage,
 	IonTitle,
 	IonToolbar,
 	useIonPopover,
 } from '@ionic/react'
-import { informationCircleOutline } from 'ionicons/icons'
+import { alertCircleOutline, informationCircleOutline } from 'ionicons/icons'
 import React, { useState } from 'react'
 import AccordionIonItem from '../../components/AccordionIonItem'
 import { dayTotals, MacrosModel, mealTotals, WeekModel } from '../../data/mfsd/MFSD'
 import { useSubDoc } from '../../util/hooks'
+import { capitalize } from '../../util/misc'
 
 const MFSDMenuPage: React.FC = () => {
 	const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 	const [week] = useSubDoc<WeekModel>('mfsd', 'khMenu')
-	const [macrosForInfo, setMacrosForInfo] = useState<MacrosModel>()
-	const [allergensForInfo, setAllergensForInfo] = useState<string>()
-	const [showInfoPopover, dismissInfoPopover] = useIonPopover(
+	const [macrosForPopover, setMacrosForPopover] = useState<MacrosModel>()
+	const [showMacroPopover, dismissMacroPopover] = useIonPopover(
 		<IonList>
+			<IonListHeader>
+				<h3>
+					<b>Macros</b>
+				</h3>
+			</IonListHeader>
 			<IonItem>
 				<IonLabel>Calories (g)</IonLabel>
-				<IonLabel slot='end'>{macrosForInfo?.calories}</IonLabel>
+				<IonLabel slot='end'>{macrosForPopover?.calories}</IonLabel>
 			</IonItem>
 			<IonItem>
 				<IonLabel>Fat (g)</IonLabel>
-				<IonLabel slot='end'>{macrosForInfo?.fatG}</IonLabel>
+				<IonLabel slot='end'>{macrosForPopover?.fatG}</IonLabel>
 			</IonItem>
 			<IonItem>
 				<IonLabel>Carbs (g)</IonLabel>
-				<IonLabel slot='end'>{macrosForInfo?.carbsG}</IonLabel>
+				<IonLabel slot='end'>{macrosForPopover?.carbsG}</IonLabel>
 			</IonItem>
 			<IonItem>
 				<IonLabel>Protein (g)</IonLabel>
-				<IonLabel slot='end'>{macrosForInfo?.proteinG}</IonLabel>
+				<IonLabel slot='end'>{macrosForPopover?.proteinG}</IonLabel>
 			</IonItem>
 			<IonItem>
 				<IonLabel>Fiber (g)</IonLabel>
-				<IonLabel slot='end'>{macrosForInfo?.fiberG}</IonLabel>
+				<IonLabel slot='end'>{macrosForPopover?.fiberG}</IonLabel>
 			</IonItem>
+		</IonList>
+	)
+	const [allergensForPopover, setAllergensForPopover] = useState<string>()
+	const [showAllergensPopover, dismissAllergensPopover] = useIonPopover(
+		<IonList>
+			<IonListHeader>
+				<h3>
+					<b>Allergens</b>
+				</h3>
+			</IonListHeader>
+			{allergensForPopover?.split(',').map((allergen, i) => (
+				<IonItem key={i}>
+					<IonLabel>{capitalize(allergen.trim())}</IonLabel>
+				</IonItem>
+			))}
 		</IonList>
 	)
 
@@ -61,8 +81,8 @@ const MFSDMenuPage: React.FC = () => {
 					<IonTitle>King Hall Menu</IonTitle>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
-				<IonList lines='none'>
+			<IonContent fullscreen>
+				<IonList lines='full'>
 					{week?.days.map((day, i) => (
 						<AccordionIonItem
 							key={i}
@@ -74,53 +94,74 @@ const MFSDMenuPage: React.FC = () => {
 							<IonList>
 								{[day.breakfast, day.lunch, day.dinner].map((meal, i) => (
 									<React.Fragment key={i}>
-										<IonItemDivider>
-											<IonLabel color='dark'>
-												<IonTitle>{['Breakfast', 'Lunch', 'Dinner'][i]}</IonTitle>
-											</IonLabel>
+										<IonItem lines='inset'>
+											<h2>
+												<b>{['Breakfast', 'Lunch', 'Dinner'][i]}</b>
+											</h2>
 											{meal !== "King's Court" && (meal?.mealItems.length ?? 0) > 0 && (
 												<IonButtons slot='end'>
 													<IonButton
 														onClick={(e) => {
-															setMacrosForInfo(mealTotals(meal))
-															showInfoPopover({
+															setMacrosForPopover(mealTotals(meal))
+															showMacroPopover({
 																event: e.nativeEvent,
 																showBackdrop: true,
 																onDidDismiss: () => {
-																	dismissInfoPopover()
-																	setMacrosForInfo(undefined)
+																	dismissMacroPopover()
+																	setMacrosForPopover(undefined)
 																},
 															})
 														}}
 													>
 														<IonIcon
-															color={getMode() === 'ios' ? 'primary' : 'dark'}
+															color='primary'
 															slot='icon-only'
 															icon={informationCircleOutline}
 														/>
 													</IonButton>
 												</IonButtons>
 											)}
-										</IonItemDivider>
+										</IonItem>
 										{meal === "King's Court" || !meal || meal?.mealItems.length === 0 ? (
-											<IonItem>
+											<IonItem lines='none'>
 												<IonLabel>{meal}</IonLabel>
 											</IonItem>
 										) : (
 											meal?.mealItems.map((mealItem, j) => (
-												<IonItem key={j}>
+												<IonItem key={j} lines='none'>
 													<p>{mealItem.name}</p>
-													{!!mealItem.macros && (
-														<IonButtons slot='end'>
+													<IonButtons slot='end'>
+														{!!mealItem.allergens && (
+															<IonButton
+																onClick={(e) => {
+																	if (!mealItem.allergens) return
+																	setAllergensForPopover(mealItem.allergens)
+																	showAllergensPopover({
+																		event: e.nativeEvent,
+																		onDidDismiss: () => {
+																			dismissAllergensPopover()
+																			setAllergensForPopover(undefined)
+																		},
+																	})
+																}}
+															>
+																<IonIcon
+																	slot='icon-only'
+																	icon={alertCircleOutline}
+																	color='danger'
+																/>
+															</IonButton>
+														)}
+														{!!mealItem.macros && (
 															<IonButton
 																onClick={(e) => {
 																	if (!mealItem.macros) return
-																	setMacrosForInfo(mealItem.macros)
-																	showInfoPopover({
+																	setMacrosForPopover(mealItem.macros)
+																	showMacroPopover({
 																		event: e.nativeEvent,
 																		onDidDismiss: () => {
-																			dismissInfoPopover()
-																			setMacrosForInfo(undefined)
+																			dismissMacroPopover()
+																			setMacrosForPopover(undefined)
 																		},
 																	})
 																}}
@@ -128,10 +169,11 @@ const MFSDMenuPage: React.FC = () => {
 																<IonIcon
 																	slot='icon-only'
 																	icon={informationCircleOutline}
+																	color='primary'
 																/>
 															</IonButton>
-														</IonButtons>
-													)}
+														)}
+													</IonButtons>
 												</IonItem>
 											))
 										)}
@@ -147,18 +189,18 @@ const MFSDMenuPage: React.FC = () => {
 										<IonButtons slot='end'>
 											<IonButton
 												onClick={(e) => {
-													setMacrosForInfo(dayTotals(day))
-													showInfoPopover({
+													setMacrosForPopover(dayTotals(day))
+													showMacroPopover({
 														event: e.nativeEvent,
 														onDidDismiss: () => {
-															dismissInfoPopover()
-															setMacrosForInfo(undefined)
+															dismissMacroPopover()
+															setMacrosForPopover(undefined)
 														},
 													})
 												}}
 											>
 												<IonIcon
-													color={getMode() === 'ios' ? 'primary' : 'dark'}
+													color='primary'
 													slot='icon-only'
 													icon={informationCircleOutline}
 												/>

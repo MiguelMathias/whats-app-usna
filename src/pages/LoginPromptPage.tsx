@@ -1,4 +1,14 @@
-import { IonButtons, IonContent, IonHeader, IonLabel, IonMenuButton, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react'
+import {
+	IonButtons,
+	IonContent,
+	IonHeader,
+	IonLabel,
+	IonMenuButton,
+	IonPage,
+	IonRouterLink,
+	IonTitle,
+	IonToolbar,
+} from '@ionic/react'
 
 const LoginPromptPage: React.FC = () => (
 	<IonPage>
@@ -10,7 +20,7 @@ const LoginPromptPage: React.FC = () => (
 				<IonTitle>Please Log In</IonTitle>
 			</IonToolbar>
 		</IonHeader>
-		<IonContent>
+		<IonContent fullscreen>
 			<div
 				style={{
 					height: '100%',

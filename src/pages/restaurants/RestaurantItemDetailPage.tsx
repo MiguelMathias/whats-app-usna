@@ -25,7 +25,11 @@ import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import RestaurantItemFavoriteButton from '../../components/restaurants/RestaurantItemFavoriteButton'
 import RestaurantItemImgSlides from '../../components/restaurants/RestaurantItemImgSlides'
-import { RestaurantBagItemModel, restaurantBagItemPrice, RestaurantItemOptionSelectableModel } from '../../data/restaurants/Restaurant'
+import {
+	RestaurantBagItemModel,
+	restaurantBagItemPrice,
+	RestaurantItemOptionSelectableModel,
+} from '../../data/restaurants/Restaurant'
 import { firestore } from '../../Firebase'
 import { decodeB64Url } from '../../util/misc'
 
@@ -38,7 +42,9 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 	const { user, userData } = useContext(AppContext)
 	const router = useIonRouter()
 	const { restaurantBagItemB64 } = useParams<{ restaurantBagItemB64: string }>()
-	const [restaurantBagItem, setRestaurantBagItem] = useState<RestaurantBagItemModel>(decodeB64Url<RestaurantBagItemModel>(restaurantBagItemB64))
+	const [restaurantBagItem, setRestaurantBagItem] = useState<RestaurantBagItemModel>(
+		decodeB64Url<RestaurantBagItemModel>(restaurantBagItemB64)
+	)
 
 	return (
 		<IonPage>
@@ -51,7 +57,11 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 						{restaurantBagItem.restaurantItem.name}: ${restaurantBagItemPrice(restaurantBagItem)}
 					</IonTitle>
 					<IonButtons slot='end'>
-						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} userFavoriteItems={userFavoriteItems} compByDetail />
+						<RestaurantItemFavoriteButton
+							restaurantBagItem={restaurantBagItem}
+							userFavoriteItems={userFavoriteItems}
+							compByDetail
+						/>
 						<IonButton
 							onClick={async () => {
 								if (userData && user) {
@@ -72,7 +82,7 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<RestaurantItemImgSlides restaurantItem={restaurantBagItem.restaurantItem} maxImgHeight={400} />
 				<IonList lines='none'>
 					{restaurantBagItem.restaurantItem.description && (
@@ -128,7 +138,10 @@ const RestaurantItemDetailPage: React.FC<RestaurantItemDetailPageProps> = ({ use
 														(select, k) =>
 															(k === j
 																? { ...select, selected: true }
-																: { ...select, selected: false }) as RestaurantItemOptionSelectableModel
+																: {
+																		...select,
+																		selected: false,
+																  }) as RestaurantItemOptionSelectableModel
 													)
 													setRestaurantBagItem({
 														...restaurantBagItem,

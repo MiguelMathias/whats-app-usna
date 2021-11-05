@@ -47,13 +47,20 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ userFavoriteI
 					<IonButtons slot='start'>
 						<IonBackButton defaultHref={`/restaurants/${restaurantPathParamB64}/orders`} />
 					</IonButtons>
-					<IonTitle>{restaurantOrder.submitted ? formatDateDefault(restaurantOrder.submitted?.toDate()) : 'Date of order unknown'}</IonTitle>
+					<IonTitle>
+						{restaurantOrder.submitted
+							? formatDateDefault(restaurantOrder.submitted?.toDate())
+							: 'Date of order unknown'}
+					</IonTitle>
 					<IonButtons slot='end'>
 						<IonButton
 							onClick={() => {
 								if (user) {
 									restaurantOrder.restaurantBagItems.forEach((restaurantBagItem) =>
-										setDoc(doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid), restaurantBagItem)
+										setDoc(
+											doc(firestore, 'users', user.uid, 'bag', restaurantBagItem.uid),
+											restaurantBagItem
+										)
 									)
 									showAddSuccessToast({
 										header: 'Added Items',
@@ -69,7 +76,7 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ userFavoriteI
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<IonList>
 					<IonItem>
 						<IonLabel>Order Total:</IonLabel>
@@ -102,11 +109,17 @@ const RestaurantOrderPage: React.FC<RestaurantOrderPageProps> = ({ userFavoriteI
 					{restaurantOrder.scheduledPickup && (
 						<IonItem>
 							<IonLabel>Scheduled Pickup</IonLabel>
-							<IonLabel slot='end'>{formatDateDefault(restaurantOrder.scheduledPickup.toDate())}</IonLabel>
+							<IonLabel slot='end'>
+								{formatDateDefault(restaurantOrder.scheduledPickup.toDate())}
+							</IonLabel>
 						</IonItem>
 					)}
 				</IonList>
-				<RestaurantMenu restaurantBagItems={restaurantOrder.restaurantBagItems ?? []} userFavoriteItems={userFavoriteItems} isOrder />
+				<RestaurantMenu
+					restaurantBagItems={restaurantOrder.restaurantBagItems ?? []}
+					userFavoriteItems={userFavoriteItems}
+					isOrder
+				/>
 			</IonContent>
 		</IonPage>
 	)

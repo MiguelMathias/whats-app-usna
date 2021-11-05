@@ -11,10 +11,15 @@ type RestaurantMainMenuPageProps = {
 	locationUid?: string
 }
 
-const RestaurantMainMenuPage: React.FC<RestaurantMainMenuPageProps> = ({ restaurant, restaurantItems, userFavoriteItems, locationUid }) => (
+const RestaurantMainMenuPage: React.FC<RestaurantMainMenuPageProps> = ({
+	restaurant,
+	restaurantItems,
+	userFavoriteItems,
+	locationUid,
+}) => (
 	<IonPage>
 		<RestaurantPageHeader headerText='Menu' restaurant={restaurant} locationUid={locationUid} />
-		<IonContent>
+		<IonContent fullscreen>
 			<RestaurantMenu
 				restaurantBagItems={restaurantItems.map(
 					(restaurantItem) =>

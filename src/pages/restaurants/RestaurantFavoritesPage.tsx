@@ -9,11 +9,15 @@ type RestaurantFavoritesPageProps = {
 	locationUid?: string
 }
 
-const RestaurantFavoritesPage: React.FC<RestaurantFavoritesPageProps> = ({ restaurant, userFavoriteItems, locationUid }) => {
+const RestaurantFavoritesPage: React.FC<RestaurantFavoritesPageProps> = ({
+	restaurant,
+	userFavoriteItems,
+	locationUid,
+}) => {
 	return (
 		<IonPage>
 			<RestaurantPageHeader headerText='Favorites' restaurant={restaurant} locationUid={locationUid} />
-			<IonContent>
+			<IonContent fullscreen>
 				<RestaurantMenu restaurantBagItems={userFavoriteItems} userFavoriteItems={userFavoriteItems} />
 			</IonContent>
 		</IonPage>

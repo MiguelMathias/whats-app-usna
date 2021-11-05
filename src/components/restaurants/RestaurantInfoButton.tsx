@@ -35,7 +35,7 @@ const RestaurantInfoButton: React.FC<RestaurantInfoButtonProps> = ({ restaurant,
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<AccordionIonItem header='Hours'>
 					<IonList>
 						{Object.entries(restaurant.hours)

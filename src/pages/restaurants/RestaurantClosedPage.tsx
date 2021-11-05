@@ -13,7 +13,7 @@ const RestaurantClosedPage: React.FC<RestaurantClosedPageProps> = ({ restaurant 
 				<IonTitle>{restaurant.name} Closed</IonTitle>
 			</IonToolbar>
 		</IonHeader>
-		<IonContent>
+		<IonContent fullscreen>
 			<div
 				style={{
 					height: '100%',
@@ -23,7 +23,9 @@ const RestaurantClosedPage: React.FC<RestaurantClosedPageProps> = ({ restaurant 
 					padding: 10,
 				}}
 			>
-				<IonLabel style={{ textAlign: 'center' }}>{restaurant.name} is closed at this time! Please check again later.</IonLabel>
+				<IonLabel style={{ textAlign: 'center' }}>
+					{restaurant.name} is closed at this time! Please check again later.
+				</IonLabel>
 			</div>
 		</IonContent>
 	</IonPage>

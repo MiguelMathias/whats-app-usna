@@ -27,7 +27,7 @@ const UserHome: React.FC = () => {
 					<IonTitle>Account</IonTitle>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<div style={{ textAlign: 'center', marginTop: 20 }}>
 					<img src={user?.photoURL ?? undefined} alt='Profile Picture' style={{ borderRadius: '50%' }} />
 				</div>
