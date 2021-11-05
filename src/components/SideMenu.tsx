@@ -1,5 +1,5 @@
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle } from '@ionic/react'
-import { cashOutline, helpOutline, libraryOutline, personOutline, restaurantOutline } from 'ionicons/icons'
+import { cashOutline, libraryOutline, personOutline, restaurantOutline } from 'ionicons/icons'
 import React, { useContext } from 'react'
 import { useLocation } from 'react-router'
 import { AppContext } from '../AppContext'
@@ -58,7 +58,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 				path: '/account',
 				icon: personOutline,
 			},
-			{ title: 'Feedback', path: '/feedback', icon: helpOutline },
+			//TODO: remove this comment and figure out the feedback page
+			//{ title: 'Feedback', path: '/feedback', icon: helpOutline },
 		] as Pages[],
 	}
 
@@ -72,7 +73,11 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 							<IonIcon slot='start' icon={page.icon} />
 							<AccordionIonItem
 								initiallyOpen
-								className={page.subPages.find((subPage) => location.pathname.startsWith(subPage.path)) ? 'selected' : undefined}
+								className={
+									page.subPages.find((subPage) => location.pathname.startsWith(subPage.path))
+										? 'selected'
+										: undefined
+								}
 								header={page.title}
 								label
 							>
@@ -81,7 +86,9 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 										<IonItem
 											routerLink={subPage.path}
 											routerDirection='root'
-											className={location.pathname.startsWith(subPage.path) ? 'selected' : undefined}
+											className={
+												location.pathname.startsWith(subPage.path) ? 'selected' : undefined
+											}
 										>
 											<IonIcon slot='start' icon={subPage.icon} />
 											<IonLabel>{subPage.title}</IonLabel>
@@ -93,7 +100,11 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 					) : (
 						<>
 							<IonIcon slot='start' icon={page.icon} />
-							<IonItem routerLink={page.path} routerDirection='root' className={location.pathname.startsWith(page.path) ? 'selected' : undefined}>
+							<IonItem
+								routerLink={page.path}
+								routerDirection='root'
+								className={location.pathname.startsWith(page.path) ? 'selected' : undefined}
+							>
 								{page.icon && <IonIcon slot='start' icon={page.icon} />}
 								<IonLabel>{page.title}</IonLabel>
 							</IonItem>
@@ -109,7 +120,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 					<IonListHeader>USNA</IonListHeader>
 					{renderListItems(routes.appPages)}
 				</IonList>
-				{!!routes.restaurantPages.length && (
+				{!!routes.restaurantPages.length && false /* TODO: only for production, restaurants not ready */ && (
 					<IonList lines='none'>
 						<IonListHeader>Restaurants</IonListHeader>
 						{renderListItems(routes.restaurantPages)}

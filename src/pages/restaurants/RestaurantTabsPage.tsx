@@ -1,5 +1,14 @@
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react'
-import { collection, CollectionReference, DocumentData, onSnapshot, orderBy, query, QueryConstraint, where } from 'firebase/firestore'
+import {
+	collection,
+	CollectionReference,
+	DocumentData,
+	onSnapshot,
+	orderBy,
+	query,
+	QueryConstraint,
+	where,
+} from 'firebase/firestore'
 import { bag, calendar, receipt, star } from 'ionicons/icons'
 import { useContext, useEffect, useState } from 'react'
 import { Redirect, Route, useParams } from 'react-router'
@@ -40,11 +49,22 @@ const RestaurantTabsPage: React.FC<RestaurantTabsPageProps> = ({ restaurants }) 
 
 	useEffect(() => {
 		if (restaurant) {
-			const itemsQuery = (collection: CollectionReference<DocumentData>, ...extraConstraints: QueryConstraint[]) =>
+			const itemsQuery = (
+				collection: CollectionReference<DocumentData>,
+				...extraConstraints: QueryConstraint[]
+			) =>
 				locationUid
-					? query(collection, where('restaurantUid', '==', restaurant.uid), where('locationUids', 'array-contains', locationUid), ...extraConstraints)
+					? query(
+							collection,
+							where('restaurantUid', '==', restaurant.uid),
+							where('locationUids', 'array-contains', locationUid),
+							...extraConstraints
+					  )
 					: query(collection, where('restaurantUid', '==', restaurant.uid), ...extraConstraints)
-			const bagItemsQuery = (collection: CollectionReference<DocumentData>, ...extraConstraints: QueryConstraint[]) =>
+			const bagItemsQuery = (
+				collection: CollectionReference<DocumentData>,
+				...extraConstraints: QueryConstraint[]
+			) =>
 				locationUid
 					? query(
 							collection,
@@ -52,24 +72,31 @@ const RestaurantTabsPage: React.FC<RestaurantTabsPageProps> = ({ restaurants }) 
 							where('restaurantItem.locationUids', 'array-contains', locationUid),
 							...extraConstraints
 					  )
-					: query(collection, where('restaurantItem.restaurantUid', '==', restaurant.uid), ...extraConstraints)
+					: query(
+							collection,
+							where('restaurantItem.restaurantUid', '==', restaurant.uid),
+							...extraConstraints
+					  )
 
-			const unSubItems = onSnapshot(itemsQuery(collection(firestore, 'restaurants', restaurant.uid, 'items')), (snapshot) =>
-				setRestaurantItems(snapshot.docs.map((doc) => doc.data() as RestaurantItemModel))
+			const unSubItems = onSnapshot(
+				itemsQuery(collection(firestore, 'restaurants', restaurant.uid, 'items')),
+				(snapshot) => setRestaurantItems(snapshot.docs.map((doc) => doc.data() as RestaurantItemModel))
 			)
 
 			let unSubFavorites = () => {}
 			let unSubBag = () => {}
 			let unSubOrders = () => {}
 			if (user) {
-				unSubFavorites = onSnapshot(bagItemsQuery(collection(firestore, 'users', user.uid, 'favorites')), (snapshot) =>
-					setUserFavoriteItems(snapshot.docs.map((doc) => doc.data() as RestaurantBagItemModel))
+				unSubFavorites = onSnapshot(
+					bagItemsQuery(collection(firestore, 'users', user.uid, 'favorites')),
+					(snapshot) => setUserFavoriteItems(snapshot.docs.map((doc) => doc.data() as RestaurantBagItemModel))
 				)
 				unSubBag = onSnapshot(bagItemsQuery(collection(firestore, 'users', user.uid, 'bag')), (snapshot) =>
 					setUserBagItems(snapshot.docs.map((doc) => doc.data() as RestaurantBagItemModel))
 				)
-				unSubOrders = onSnapshot(itemsQuery(collection(firestore, 'users', user.uid, 'orders'), orderBy('submitted', 'desc')), (snapshot) =>
-					setUserOrders(snapshot.docs.map((doc) => doc.data() as RestaurantOrderModel))
+				unSubOrders = onSnapshot(
+					itemsQuery(collection(firestore, 'users', user.uid, 'orders'), orderBy('submitted', 'desc')),
+					(snapshot) => setUserOrders(snapshot.docs.map((doc) => doc.data() as RestaurantOrderModel))
 				)
 			}
 			return () => {
@@ -105,10 +132,19 @@ const RestaurantTabsPage: React.FC<RestaurantTabsPageProps> = ({ restaurants }) 
 					/>
 				</Route>
 				<Route exact path={`/restaurants/:restaurantPathParamB64/favorites`}>
-					<RestaurantFavoritesPage restaurant={restaurant} userFavoriteItems={userFavoriteItems} locationUid={locationUid} />
+					<RestaurantFavoritesPage
+						restaurant={restaurant}
+						userFavoriteItems={userFavoriteItems}
+						locationUid={locationUid}
+					/>
 				</Route>
 				<Route exact path={`/restaurants/:restaurantPathParamB64/bag`}>
-					<RestaurantBagPage restaurant={restaurant} userBagItems={userBagItems} userFavoriteItems={userFavoriteItems} locationUid={locationUid} />
+					<RestaurantBagPage
+						restaurant={restaurant}
+						userBagItems={userBagItems}
+						userFavoriteItems={userFavoriteItems}
+						locationUid={locationUid}
+					/>
 				</Route>
 				<Route exact path={`/restaurants/:restaurantPathParamB64/orders/:restaurantOrderTSB64`}>
 					<RestaurantOrderPage userOrders={userOrders} userFavoriteItems={userFavoriteItems} />
@@ -119,19 +155,19 @@ const RestaurantTabsPage: React.FC<RestaurantTabsPageProps> = ({ restaurants }) 
 			</IonRouterOutlet>
 			<IonTabBar slot='bottom'>
 				<IonTabButton tab='menu' href={`/restaurants/${restaurantPathParamB64}/menu`}>
-					<IonIcon icon={calendar}></IonIcon>
+					<IonIcon icon={calendar} />
 					<IonLabel>Menu</IonLabel>
 				</IonTabButton>
 				<IonTabButton tab='favorites' href={`/restaurants/${restaurantPathParamB64}/favorites`}>
-					<IonIcon icon={star}></IonIcon>
+					<IonIcon icon={star} />
 					<IonLabel>Favorites</IonLabel>
 				</IonTabButton>
 				<IonTabButton tab='bag' href={`/restaurants/${restaurantPathParamB64}/bag`}>
-					<IonIcon icon={bag}></IonIcon>
+					<IonIcon icon={bag} />
 					<IonLabel>Bag</IonLabel>
 				</IonTabButton>
 				<IonTabButton tab='orders' href={`/restaurants/${restaurantPathParamB64}/orders`}>
-					<IonIcon icon={receipt}></IonIcon>
+					<IonIcon icon={receipt} />
 					<IonLabel>Orders</IonLabel>
 				</IonTabButton>
 			</IonTabBar>

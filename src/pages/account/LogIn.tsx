@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithRedirect } from '@firebase/auth'
+import { GoogleAuthProvider, signInWithPopup } from '@firebase/auth'
 import {
 	IonButton,
 	IonButtons,
@@ -30,7 +30,7 @@ const LogIn: React.FC = () => (
 				<IonIcon icon={personOutline} style={{ fontSize: 64 }} />
 			</div>
 			<div style={{ textAlign: 'center', marginTop: 20 }}>
-				<IonButton onClick={() => signInWithRedirect(auth, provider)}>Google Authentication</IonButton>
+				<IonButton onClick={() => signInWithPopup(auth, provider)}>Google Authentication</IonButton>
 			</div>
 		</IonContent>
 	</IonPage>

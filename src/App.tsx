@@ -26,6 +26,7 @@ import { RestaurantModel } from './data/restaurants/Restaurant'
 import { auth, firestore } from './Firebase'
 import Account from './pages/account/Account'
 import Home from './pages/Home'
+import MFSDTabsPage from './pages/mfsd/MFSDTabsPage'
 import RestaurantTabsPage from './pages/restaurants/RestaurantTabsPage'
 /* Theme variables */
 import './theme/variables.css'
@@ -68,7 +69,8 @@ const App: React.FC = () => {
 	}, [user?.uid])
 
 	onAuthStateChanged(auth, (user) => {
-		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '') /* /m[1-9]{6}@usna\.edu/.test(user?.email ?? '') */) setUser(user ?? undefined)
+		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '') /* /m[1-9]{6}@usna\.edu/.test(user?.email ?? '') */)
+			setUser(user ?? undefined)
 		else if (user) {
 			showBadAccountToast({
 				header: 'Wrong Account!',
@@ -93,12 +95,6 @@ const App: React.FC = () => {
 					<IonSplitPane contentId='main'>
 						<SideMenu restaurants={restaurants} />
 						<IonRouterOutlet id='main'>
-							<Route path={`/restaurants/:restaurantPathParamB64`}>
-								<RestaurantTabsPage restaurants={restaurants} />
-							</Route>
-							<Route exact path='/mfsd'>
-								<Home />
-							</Route>
 							<Route exact path='/mwf'>
 								<Home />
 							</Route>
@@ -113,6 +109,12 @@ const App: React.FC = () => {
 							</Route>
 							<Route exact path='/account'>
 								<Account />
+							</Route>
+							<Route path='/mfsd'>
+								<MFSDTabsPage />
+							</Route>
+							<Route path={`/restaurants/:restaurantPathParamB64`}>
+								<RestaurantTabsPage restaurants={restaurants} />
 							</Route>
 						</IonRouterOutlet>
 					</IonSplitPane>
