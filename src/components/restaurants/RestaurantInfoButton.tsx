@@ -1,17 +1,5 @@
-import {
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonItem,
-	IonLabel,
-	IonList,
-	IonPage,
-	IonTitle,
-	IonToolbar,
-	useIonModal,
-} from '@ionic/react'
+import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonPage, IonTitle, IonToolbar, useIonModal } from '@ionic/react'
+import { Markup } from 'interweave'
 import { closeOutline, informationCircleOutline } from 'ionicons/icons'
 import { RestaurantModel } from '../../data/restaurants/Restaurant'
 import { daysOfWeek } from '../../util/misc'
@@ -53,12 +41,9 @@ const RestaurantInfoButton: React.FC<RestaurantInfoButtonProps> = ({ restaurant,
 					</IonList>
 				</AccordionIonItem>
 				<AccordionIonItem header='Description' initiallyOpen>
-					<div
-						style={{ whiteSpace: 'pre-wrap', padding: 10 }}
-						dangerouslySetInnerHTML={{
-							__html: restaurant.description?.replaceAll('<a', '<a target="_blank"') ?? '',
-						}}
-					/>
+					<div style={{ whiteSpace: 'pre-wrap', padding: 10 }}>
+						<Markup content={restaurant.description?.replaceAll('<a', '<a target="_blank"') ?? ''} />
+					</div>
 				</AccordionIonItem>
 			</IonContent>
 		</IonPage>

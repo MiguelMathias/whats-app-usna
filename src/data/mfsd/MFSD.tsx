@@ -1,3 +1,6 @@
+import { Timestamp } from 'firebase/firestore'
+const extract = require('mention-hashtag')
+
 export type WeekModel = {
 	days: DayModel[]
 }
@@ -60,3 +63,24 @@ export const dayTotals = (day: DayModel) =>
 				proteinG: (prev?.proteinG ?? 0) + (cur?.proteinG ?? 0),
 			} as MacrosModel)
 	)
+
+export type UpdatePost = {
+	updateUid: string
+	title?: string
+	caption?: string
+	posted?: Timestamp
+	instaPostId?: string
+}
+
+export const updateCaptionHTML = (caption?: string) => {
+	const { mentions, hashtags }: { mentions: string[]; hashtags: string[] } = extract(caption, { unique: true, type: 'all' })
+	let newCaption = caption
+	for (const mention of mentions)
+		newCaption = newCaption?.replaceAll(mention, `<a href="https://www.instagram.com/${mention.replaceAll('@', '')}" target="_blank">${mention}</a>`)
+	for (const hashtag of hashtags)
+		newCaption = newCaption?.replaceAll(
+			hashtag,
+			`<a href="https://www.instagram.com/explore/tags/${hashtag.replaceAll('#', '')}" target="_blank">${hashtag}</a>`
+		)
+	return newCaption
+}

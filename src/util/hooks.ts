@@ -1,8 +1,5 @@
-import { collection, onSnapshot } from '@firebase/firestore'
-import { doc } from 'firebase/firestore'
-import { useState } from 'react'
-import { useEffectOnce } from 'react-use'
-import { firestore } from '../Firebase'
+import { CollectionReference, DocumentData, DocumentReference, onSnapshot, Query } from '@firebase/firestore'
+import { useEffect, useState } from 'react'
 
 export const useForceUpdate = () => {
 	const [forceUpdate, setForceUpdate] = useState(false)
@@ -11,14 +8,20 @@ export const useForceUpdate = () => {
 	}
 }
 
-export const useSubDoc = <T>(path: string, ...pathSegments: string[]): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>] => {
+export const useSubDoc = <T>(
+	doc: DocumentReference<DocumentData>,
+	deps: React.DependencyList | undefined = []
+): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>] => {
 	const [docData, setDocData] = useState<T>()
-	useEffectOnce(() => onSnapshot(doc(firestore, path, ...pathSegments), (snapshot) => setDocData(snapshot.data() as T)))
+	useEffect(() => onSnapshot(doc, (snapshot) => setDocData(snapshot.data() as T)), deps)
 	return [docData, setDocData]
 }
 
-export const useSubCollection = <T>(path: string, ...pathSegments: string[]): [T[], React.Dispatch<React.SetStateAction<T[]>>] => {
+export const useSubCollection = <T>(
+	collection: Query<DocumentData> | CollectionReference<DocumentData>,
+	deps: React.DependencyList | undefined = []
+): [T[], React.Dispatch<React.SetStateAction<T[]>>] => {
 	const [collectionData, setCollectionData] = useState<T[]>([])
-	useEffectOnce(() => onSnapshot(collection(firestore, path, ...pathSegments), (snapshot) => setCollectionData(snapshot.docs.map((doc) => doc.data() as T))))
+	useEffect(() => onSnapshot(collection, (snapshot) => setCollectionData(snapshot.docs.map((doc) => doc.data() as T))), deps)
 	return [collectionData, setCollectionData]
 }

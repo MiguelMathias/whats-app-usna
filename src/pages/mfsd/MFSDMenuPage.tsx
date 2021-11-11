@@ -15,16 +15,18 @@ import {
 	IonToolbar,
 	useIonPopover,
 } from '@ionic/react'
+import { doc } from 'firebase/firestore'
 import { alertCircleOutline, informationCircleOutline } from 'ionicons/icons'
 import React, { useState } from 'react'
 import AccordionIonItem from '../../components/AccordionIonItem'
 import { dayTotals, MacrosModel, mealTotals, WeekModel } from '../../data/mfsd/MFSD'
+import { firestore } from '../../Firebase'
 import { useSubDoc } from '../../util/hooks'
 import { capitalize } from '../../util/misc'
 
 const MFSDMenuPage: React.FC = () => {
 	const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-	const [week] = useSubDoc<WeekModel>('mfsd', 'khMenu')
+	const [week] = useSubDoc<WeekModel>(doc(firestore, 'mfsd', 'khMenu'))
 	const [macrosForPopover, setMacrosForPopover] = useState<MacrosModel>()
 	const [showMacroPopover, dismissMacroPopover] = useIonPopover(
 		<IonList>
@@ -87,9 +89,7 @@ const MFSDMenuPage: React.FC = () => {
 						<AccordionIonItem
 							key={i}
 							header={day.name}
-							initiallyOpen={
-								i < days.length && day.name.toLowerCase().includes(days[new Date().getDay()])
-							}
+							initiallyOpen={i < days.length && day.name.toLowerCase().includes(days[new Date().getDay()])}
 						>
 							<IonList>
 								{[day.breakfast, day.lunch, day.dinner].map((meal, i) => (
@@ -113,11 +113,7 @@ const MFSDMenuPage: React.FC = () => {
 															})
 														}}
 													>
-														<IonIcon
-															color='primary'
-															slot='icon-only'
-															icon={informationCircleOutline}
-														/>
+														<IonIcon color='primary' slot='icon-only' icon={informationCircleOutline} />
 													</IonButton>
 												</IonButtons>
 											)}
@@ -145,11 +141,7 @@ const MFSDMenuPage: React.FC = () => {
 																	})
 																}}
 															>
-																<IonIcon
-																	slot='icon-only'
-																	icon={alertCircleOutline}
-																	color='warning'
-																/>
+																<IonIcon slot='icon-only' icon={alertCircleOutline} color='warning' />
 															</IonButton>
 														)}
 														{!!mealItem.macros && (
@@ -166,11 +158,7 @@ const MFSDMenuPage: React.FC = () => {
 																	})
 																}}
 															>
-																<IonIcon
-																	slot='icon-only'
-																	icon={informationCircleOutline}
-																	color='primary'
-																/>
+																<IonIcon slot='icon-only' icon={informationCircleOutline} color='primary' />
 															</IonButton>
 														)}
 													</IonButtons>
@@ -179,9 +167,7 @@ const MFSDMenuPage: React.FC = () => {
 										)}
 									</React.Fragment>
 								))}
-								{!![day.breakfast, day.lunch, day.dinner].find(
-									(meal) => meal !== "King's Court" && (meal?.mealItems.length ?? 0) > 0
-								) && (
+								{!![day.breakfast, day.lunch, day.dinner].find((meal) => meal !== "King's Court" && (meal?.mealItems.length ?? 0) > 0) && (
 									<IonItemDivider>
 										<IonLabel color='dark'>
 											<b>Daily Totals</b>
@@ -199,11 +185,7 @@ const MFSDMenuPage: React.FC = () => {
 													})
 												}}
 											>
-												<IonIcon
-													color='primary'
-													slot='icon-only'
-													icon={informationCircleOutline}
-												/>
+												<IonIcon color='primary' slot='icon-only' icon={informationCircleOutline} />
 											</IonButton>
 										</IonButtons>
 									</IonItemDivider>

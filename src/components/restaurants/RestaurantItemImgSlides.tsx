@@ -2,7 +2,7 @@ import { getDownloadURL, listAll, ref } from '@firebase/storage'
 import { useEffect, useState } from 'react'
 import { RestaurantItemModel } from '../../data/restaurants/Restaurant'
 import { storage } from '../../Firebase'
-import ImgSlides from '../ImgSlides'
+import ImgOrVidSlides from '../ImgOrVidSlides'
 
 type RestaurantItemImgSlidesProps = {
 	restaurantItem: RestaurantItemModel
@@ -10,13 +10,13 @@ type RestaurantItemImgSlidesProps = {
 }
 
 const RestaurantItemImgSlides: React.FC<RestaurantItemImgSlidesProps> = ({ restaurantItem, maxImgHeight }) => {
-	const [picSrcs, setPicSrcs] = useState<string[]>([])
+	const [srcs, setSrcs] = useState<string[]>([])
 	useEffect(() => {
-		listAll(ref(storage, `/restaurants/${restaurantItem.restaurantUid}/items/${restaurantItem.uid}/pictures`)).then(async ({ items }) =>
-			setPicSrcs(await Promise.all(items.map((item) => getDownloadURL(item))))
+		listAll(ref(storage, `/restaurants/${restaurantItem.restaurantUid}/items/${restaurantItem.uid}/media`)).then(async ({ items }) =>
+			setSrcs(await Promise.all(items.map(async (item) => getDownloadURL(item))))
 		)
 	}, [restaurantItem.uid])
-	return <ImgSlides picSrcs={picSrcs} maxImgHeight={maxImgHeight} />
+	return <ImgOrVidSlides slideSrcs={srcs} maxImgHeight={maxImgHeight} />
 }
 
 export default RestaurantItemImgSlides

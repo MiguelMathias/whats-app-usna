@@ -18,7 +18,6 @@ import { onAuthStateChanged, signOut, User } from 'firebase/auth'
 import { collection, doc, query } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import { useEffectOnce } from 'react-use'
 import { AppContext, AppContextType } from './AppContext'
 import SideMenu from './components/SideMenu'
 import { UserDataModel } from './data/account/User'
@@ -30,11 +29,14 @@ import MFSDTabsPage from './pages/mfsd/MFSDTabsPage'
 import RestaurantTabsPage from './pages/restaurants/RestaurantTabsPage'
 /* Theme variables */
 import './theme/variables.css'
+import { useSubCollection } from './util/hooks'
 
 const App: React.FC = () => {
 	const [user, setUser] = useState<User | undefined>(undefined)
 	const [userData, setUserData] = useState<UserDataModel | undefined>(undefined)
-	const [restaurants, setRestaurants] = useState<RestaurantModel[]>([])
+	const [restaurants] = useSubCollection<RestaurantModel>(
+		query(collection(firestore, 'restaurants'), where('active', '==', true))
+	)
 	const [showBadAccountToast, _] = useIonToast()
 
 	const appContextProviderValue = {
@@ -82,12 +84,6 @@ const App: React.FC = () => {
 		} else setUser(undefined)
 	})
 
-	useEffectOnce(() => {
-		onSnapshot(query(collection(firestore, 'restaurants'), where('active', '==', true)), (snapshot) =>
-			setRestaurants(snapshot.docs.map((doc) => doc.data() as RestaurantModel))
-		)
-	})
-
 	return (
 		<AppContext.Provider value={appContextProviderValue}>
 			<IonApp>
@@ -95,17 +91,14 @@ const App: React.FC = () => {
 					<IonSplitPane contentId='main'>
 						<SideMenu restaurants={restaurants} />
 						<IonRouterOutlet id='main'>
+							<Route exact path='/'>
+								<Redirect to='/mfsd' />
+							</Route>
 							<Route exact path='/mwf'>
 								<Home />
 							</Route>
 							<Route exact path='/nabsd'>
 								<Home />
-							</Route>
-							<Route exact path='/home'>
-								<Home />
-							</Route>
-							<Route exact path='/'>
-								<Redirect to='/home' />
 							</Route>
 							<Route exact path='/account'>
 								<Account />
