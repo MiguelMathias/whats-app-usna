@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth'
 import { CACHE_SIZE_UNLIMITED, enableIndexedDbPersistence, initializeFirestore } from 'firebase/firestore'
+import { getMessaging } from 'firebase/messaging'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
@@ -19,7 +20,7 @@ export const firestore = initializeFirestore(firebaseApp, {
 })
 export const storage = getStorage(firebaseApp)
 export const auth = getAuth(firebaseApp)
+export const messaging = getMessaging(firebaseApp)
 
 setPersistence(auth, browserLocalPersistence)
 enableIndexedDbPersistence(firestore)
-//clearIndexedDbPersistence(firestore)

@@ -1,9 +1,11 @@
-import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle } from '@ionic/react'
-import { cashOutline, libraryOutline, personOutline, restaurantOutline } from 'ionicons/icons'
+import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, useIonRouter, useIonToast } from '@ionic/react'
+import { onMessage } from 'firebase/messaging'
+import { cashOutline, chevronForward, libraryOutline, personOutline, restaurantOutline } from 'ionicons/icons'
 import React, { useContext } from 'react'
 import { useLocation } from 'react-router'
 import { AppContext } from '../AppContext'
 import { RestaurantModel, RestaurantPathParameterModel } from '../data/restaurants/Restaurant'
+import { messaging } from '../Firebase'
 import { capitalize, encodeB64Url } from '../util/misc'
 import AccordionIonItem from './AccordionIonItem'
 import './SideMenu.scss'
@@ -23,6 +25,8 @@ type SideMenuProps = {
 const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 	const location = useLocation()
 	const { user } = useContext(AppContext)
+	const [showNotif] = useIonToast()
+	const router = useIonRouter()
 
 	const routes = {
 		appPages: [
@@ -62,6 +66,23 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 			//{ title: 'Feedback', path: '/feedback', icon: helpOutline },
 		] as Pages[],
 	}
+
+	onMessage(messaging, (payload) => {
+		console.log('Received foreground message', payload)
+		return showNotif({
+			header: payload.notification?.title,
+			message: payload.notification?.body,
+			duration: 10000,
+			color: 'tertiary',
+			buttons: [
+				{
+					icon: chevronForward,
+					side: 'end',
+					handler: () => router.push(`/${payload.data?.dept}/updates/${payload.data?.uid}`),
+				},
+			],
+		})
+	})
 
 	const renderListItems = (pages: Pages[]) => {
 		return pages

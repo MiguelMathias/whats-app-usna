@@ -1,4 +1,4 @@
-import { CollectionReference, DocumentData, DocumentReference, onSnapshot, Query } from '@firebase/firestore'
+import { CollectionReference, DocumentData, DocumentReference, onSnapshot, Query, setDoc } from '@firebase/firestore'
 import { useEffect, useState } from 'react'
 
 export const useForceUpdate = () => {
@@ -11,10 +11,10 @@ export const useForceUpdate = () => {
 export const useSubDoc = <T>(
 	doc: DocumentReference<DocumentData>,
 	deps: React.DependencyList | undefined = []
-): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>] => {
+): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, (data: T) => Promise<void>] => {
 	const [docData, setDocData] = useState<T>()
 	useEffect(() => onSnapshot(doc, (snapshot) => setDocData(snapshot.data() as T)), deps)
-	return [docData, setDocData]
+	return [docData, setDocData, (data: T) => setDoc(doc, data)]
 }
 
 export const useSubCollection = <T>(

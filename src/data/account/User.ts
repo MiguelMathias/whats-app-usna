@@ -6,9 +6,11 @@ export type UserDataModel = {
 	uid: string
 	displayName?: string
 	admin?: string[]
+	deviceTokens?: string[]
+	subbedTopics?: string[]
 }
 
-export const setUserData = async (appContext: AppContextType) => {
+export const setUserDoc = async (appContext: AppContextType) => {
 	if (appContext.user) {
 		return setDoc(doc(firestore, 'users', appContext.user.uid), appContext.userData)
 	} else console.error("User isn't logged in; cannot set user data document.")

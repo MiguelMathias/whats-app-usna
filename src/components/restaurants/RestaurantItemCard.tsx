@@ -42,7 +42,6 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurantBagIt
 				</div>
 			</IonCardHeader>
 			<IonCardContent>
-				{/* add image slides */}
 				<IonLabel class='ion-text-wrap'>
 					{restaurantBagItem.restaurantItem.ingredients
 						.filter((ingredient) => ingredient.selected)

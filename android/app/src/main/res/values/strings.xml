@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">USNApp</string>
+    <string name="title_activity_main">USNApp</string>
+    <string name="package_name">app.web.usnapp</string>
+    <string name="custom_url_scheme">app.web.usnapp</string>
+</resources>

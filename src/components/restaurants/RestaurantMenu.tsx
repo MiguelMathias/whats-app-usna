@@ -32,11 +32,11 @@ const RestaurantMenu: React.FC<RestaurantMenuProps> = ({ restaurantBagItems, use
 							return all
 						}, [] as RestaurantBagItemModel[][])
 						.map((restaurantBagItemPair, i) => (
-							<div key={i}>
+							<React.Fragment key={i}>
 								{restaurantBagItemPair.map((restaurantBagItem, j) => (
 									<RestaurantItemCard key={j} restaurantBagItem={restaurantBagItem} userFavoriteItems={userFavoriteItems} isOrder={isOrder} />
 								))}
-							</div>
+							</React.Fragment>
 						))}
 				</div>
 			</React.Fragment>

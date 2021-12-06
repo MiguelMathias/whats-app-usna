@@ -1,4 +1,3 @@
-import { Timestamp } from 'firebase/firestore'
 const extract = require('mention-hashtag')
 
 export type WeekModel = {
@@ -63,14 +62,6 @@ export const dayTotals = (day: DayModel) =>
 				proteinG: (prev?.proteinG ?? 0) + (cur?.proteinG ?? 0),
 			} as MacrosModel)
 	)
-
-export type UpdatePost = {
-	updateUid: string
-	title?: string
-	caption?: string
-	posted?: Timestamp
-	instaPostId?: string
-}
 
 export const updateCaptionHTML = (caption?: string) => {
 	const { mentions, hashtags }: { mentions: string[]; hashtags: string[] } = extract(caption, { unique: true, type: 'all' })

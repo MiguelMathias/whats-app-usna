@@ -1,9 +1,10 @@
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react'
 import { calendarOutline, helpCircleOutline, newspaperOutline } from 'ionicons/icons'
 import { Redirect, Route } from 'react-router'
+import UpdatePage from '../UpdatePage'
+import UpdatesPage from '../UpdatesPage'
 import MFSDFeedbackPage from './MFSDFeedbackPage'
 import MFSDMenuPage from './MFSDMenuPage'
-import MFSDUpdatesPage from './MFSDUpdatesPage'
 
 const MFSDTabsPage: React.FC = () => (
 	<IonTabs>
@@ -12,7 +13,10 @@ const MFSDTabsPage: React.FC = () => (
 				<MFSDMenuPage />
 			</Route>
 			<Route exact path='/mfsd/updates'>
-				<MFSDUpdatesPage />
+				<UpdatesPage dept='mfsd' />
+			</Route>
+			<Route exact path='/mfsd/updates/:updateUid'>
+				<UpdatePage dept='mfsd' />
 			</Route>
 			<Route exact path='/mfsd/feedback'>
 				<MFSDFeedbackPage />
