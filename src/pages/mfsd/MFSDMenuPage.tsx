@@ -193,6 +193,7 @@ const MFSDMenuPage: React.FC = () => {
 							</IonList>
 						</AccordionIonItem>
 					))}
+					<IonItemDivider>Last Updated: {week?.lastUpdated ? new Date(week?.lastUpdated).toLocaleString() : ''}</IonItemDivider>
 				</IonList>
 			</IonContent>
 		</IonPage>

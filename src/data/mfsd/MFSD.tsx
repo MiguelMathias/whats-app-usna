@@ -2,6 +2,7 @@ const extract = require('mention-hashtag')
 
 export type WeekModel = {
 	days: DayModel[]
+	lastUpdated: number
 }
 
 export type DayModel = {
