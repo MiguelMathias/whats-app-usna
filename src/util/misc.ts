@@ -4,7 +4,7 @@ export type MapStringType<V> = { [key: string]: V }
 
 export const capitalize = (s?: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : undefined)
 
-export const distinct = (value: any, index: any, self: string | any[]) => self.indexOf(value) === index
+export const distinct = (value: any, index: any, self: string | any[]) => value && self.indexOf(value) === index
 
 export const encodeB64Url = <T>(objectToEncode: T) => encodeURI(btoa(JSON.stringify(objectToEncode)))
 export const decodeB64Url = <T>(strToDecode: string) => JSON.parse(atob(decodeURI(strToDecode))) as T
