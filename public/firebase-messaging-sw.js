@@ -25,7 +25,7 @@ messaging.onBackgroundMessage((payload) => {
 	const notificationOptions = {
 		body: payload.notification.body,
 		image: payload.notification.image,
-		data: { url: `localhost:8100/${payload.data.dept}/updates/${payload.data.uid}` },
+		data: { url: `https://whats-app-usna.web.app/${payload.data.dept}/updates/${payload.data.uid}` },
 	}
 
 	self.registration.showNotification(notificationTitle, notificationOptions)
