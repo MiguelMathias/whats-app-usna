@@ -41,20 +41,12 @@ type RestaurantBagPageProps = {
 	locationUid?: string
 }
 
-const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({
-	restaurant,
-	userBagItems,
-	userFavoriteItems,
-	locationUid,
-}) => {
+const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userBagItems, userFavoriteItems, locationUid }) => {
 	const { user, userData } = useContext(AppContext)
 	const location = restaurant.locations.find((location) => location.uid === locationUid)
 
 	const minPickupTime = () =>
-		format(
-			roundToNearestMinutes(addMinutes(Date.now(), orderReadyMinMinutes(userBagItems)), { nearestTo: 15 }),
-			"yyyy-MM-dd'T'HH:mm:ss"
-		)
+		format(roundToNearestMinutes(addMinutes(Date.now(), orderReadyMinMinutes(userBagItems)), { nearestTo: 15 }), "yyyy-MM-dd'T'HH:mm:ss")
 
 	const [chosenPickupTime, setChosenPickupTime] = useState(minPickupTime())
 
@@ -62,13 +54,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({
 
 	const forceUpdate = useForceUpdate()
 
-	useEffect(
-		() =>
-			setChosenPickupTime(
-				new Date(chosenPickupTime) < new Date(minPickupTime()) ? minPickupTime() : chosenPickupTime
-			),
-		[userBagItems.join()]
-	)
+	useEffect(() => setChosenPickupTime(new Date(chosenPickupTime) < new Date(minPickupTime()) ? minPickupTime() : chosenPickupTime), [userBagItems.join()])
 
 	return (
 		<IonPage>
@@ -78,8 +64,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({
 						<IonMenuButton />
 					</IonButtons>
 					<IonTitle>
-						{restaurant.name + (location?.name ? ` ${location.name}` : '')} Bag: $
-						{orderTotalPrice(userBagItems)}
+						{restaurant.name + (location?.name ? ` ${location.name}` : '')} Bag: ${orderTotalPrice(userBagItems)}
 					</IonTitle>
 					<IonButtons slot='end'>
 						<IonButton
@@ -113,10 +98,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({
 										header: 'Order submitted',
 										color: 'success',
 										duration: 2000,
-										message: `Order will be ready at approximately ${format(
-											new Date(chosenPickupTime),
-											'H:mm'
-										)}`,
+										message: `Order will be ready at approximately ${format(new Date(chosenPickupTime), 'H:mm')}`,
 									})
 								}
 							}}
@@ -131,7 +113,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({
 					<IonLabel>Pickup Time</IonLabel>
 					<IonDatetime
 						disabled={!userBagItems.length}
-						displayFormat='H:mm D MMM'
+						//displayFormat='H:mm D MMM'
 						min={minPickupTime()}
 						value={chosenPickupTime}
 						display-timezone='America/New_York'

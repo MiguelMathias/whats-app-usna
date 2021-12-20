@@ -93,7 +93,6 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 						<IonMenuToggle autoHide={false}>
 							<IonIcon slot='start' icon={page.icon} />
 							<AccordionIonItem
-								initiallyOpen
 								className={page.subPages.find((subPage) => location.pathname.startsWith(subPage.path)) ? 'selected' : undefined}
 								header={page.title}
 								label
