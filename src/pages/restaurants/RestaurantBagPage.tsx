@@ -196,7 +196,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userB
 				</IonToolbar>
 			</IonHeader>
 			<IonContent fullscreen ref={contentRef}>
-				<IonItem button detail onClick={() => presentPickupModal()}>
+				<IonItem button detail onClick={() => presentPickupModal({ swipeToClose: true, presentingElement: contentRef.current ?? undefined })}>
 					<IonLabel>Scheduled Pickup</IonLabel>
 					<IonLabel slot='end'>{masterDateTime !== 'ASAP' ? format(masterDateTime, 'EEE MMM dd, H:mm a') : 'ASAP'}</IonLabel>
 				</IonItem>

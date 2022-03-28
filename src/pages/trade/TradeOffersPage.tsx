@@ -111,10 +111,10 @@ const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ tradeOffers, sort, se
 					</IonButtons>
 					<IonTitle>Offers</IonTitle>
 					<IonButtons slot='end'>
-						<IonButton onClick={() => showSortModal({ presentingElement: headerRef.current ?? undefined })}>
+						<IonButton onClick={() => showSortModal({ presentingElement: headerRef.current ?? undefined, swipeToClose: true })}>
 							<IonIcon slot='icon-only' icon={swapVerticalOutline} />
 						</IonButton>
-						<IonButton onClick={() => showCategoryModal({ presentingElement: headerRef.current ?? undefined })}>
+						<IonButton onClick={() => showCategoryModal({ presentingElement: headerRef.current ?? undefined, swipeToClose: true })}>
 							<IonIcon slot='icon-only' icon={optionsOutline} />
 						</IonButton>
 					</IonButtons>
