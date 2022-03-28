@@ -72,7 +72,7 @@ const TradeOfferCard: React.FC<TradeOfferCardProps> = ({ isMine, tradeOffer }) =
 						alignItems: 'end',
 					}}
 				>
-					<IonLabel color='dark'>${tradeOffer.price}</IonLabel>
+					<IonLabel color='dark'>{isMine ? `Best Bid: $${tradeOffer.bestBid?.price}` ?? `$${0}` : `$${tradeOffer.price}`}</IonLabel>
 				</div>
 			</IonCardContent>
 		</IonCard>

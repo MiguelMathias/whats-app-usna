@@ -4,6 +4,7 @@ import {
 	IonButtons,
 	IonCheckbox,
 	IonContent,
+	IonFooter,
 	IonHeader,
 	IonIcon,
 	IonInput,
@@ -28,7 +29,7 @@ import { Redirect, useParams } from 'react-router'
 import { useEffectOnce } from 'react-use'
 import { AppContext } from '../../AppContext'
 import ImgOrVid from '../../components/ImgOrVid'
-import { tradeCategories as tradeOfferCategories, TradeConversationModel, TradeOfferModel } from '../../data/trade/Trade'
+import { tradeCategories as tradeOfferCategories, TradeOfferModel } from '../../data/trade/Trade'
 import { deleteStorageFolder, firestore, storage } from '../../Firebase'
 import LoadingPage from '../LoadingPage'
 
@@ -46,7 +47,7 @@ const TradeMyOfferPage: React.FC = () => {
 		price: 0,
 		active: true,
 		favoritedUids: [] as string[],
-		conversations: [] as TradeConversationModel[],
+		bestBid: { price: 0, email: '' },
 	} as TradeOfferModel)
 	const [files, setFiles] = useState<File[]>([])
 	const [roomNoVisible, setRoomNoVisible] = useState(!!tradeOffer.roomNumber)
@@ -58,7 +59,7 @@ const TradeMyOfferPage: React.FC = () => {
 	const category = useRef(tradeOffer.category)
 	const description = useRef(tradeOffer.description)
 	const price = useRef(tradeOffer.price)
-	const archived = useRef(tradeOffer.active)
+	const accepted = useRef(!tradeOffer.active)
 
 	const [showAlert] = useIonAlert()
 	const router = useIonRouter()
@@ -84,7 +85,7 @@ const TradeMyOfferPage: React.FC = () => {
 				category.current = newTradeOffer.category
 				description.current = newTradeOffer.description
 				price.current = newTradeOffer.price
-				archived.current = !newTradeOffer.active
+				accepted.current = !newTradeOffer.active
 
 				setRoomNoVisible(!!newTradeOffer?.roomNumber)
 				setPhoneNoVisible(!!newTradeOffer?.phoneNumber)
@@ -149,13 +150,14 @@ const TradeMyOfferPage: React.FC = () => {
 									category: category.current,
 									description: description.current,
 									price: price.current,
-									active: !archived.current,
+									active: !accepted.current,
 									posted: tradeOffer.posted ?? serverTimestamp(),
 									posterUid: user.uid,
 									roomNumber: roomNoVisible ? userData?.roomNumber ?? '' : '',
 									phoneNumber: phoneNoVisible ? userData?.phoneNumber ?? '' : '',
 									email: emailVisible ? user.email ?? '' : '',
 									venmoId: venmoIdVisible ? userData?.venmoId ?? '' : '',
+									bestBid: tradeOffer.bestBid ?? { price: 0, email: '' },
 								} as TradeOfferModel)
 								router.push(`/trade/my-offers`, 'back', 'pop')
 							}}
@@ -215,8 +217,8 @@ const TradeMyOfferPage: React.FC = () => {
 					)}
 					{!adding && (
 						<IonItem>
-							<IonLabel>Archived</IonLabel>
-							<IonCheckbox slot='end' checked={archived.current} onIonChange={(e) => (archived.current = e.detail.checked)} />
+							<IonLabel>Bid Accepted / Archived</IonLabel>
+							<IonCheckbox slot='end' checked={accepted.current} onIonChange={(e) => (accepted.current = e.detail.checked)} />
 						</IonItem>
 					)}
 					<IonItem>
@@ -249,6 +251,30 @@ const TradeMyOfferPage: React.FC = () => {
 					)}
 				</IonList>
 			</IonContent>
+			{!adding && (
+				<IonFooter>
+					<IonItem>
+						<IonLabel>
+							${tradeOffer.bestBid?.price ?? 0}
+							{tradeOffer.bestBid?.email && (
+								<>
+									{' '}
+									- by <a href={`mailto:${tradeOffer.bestBid?.email}`}>{tradeOffer.bestBid?.email}</a>
+								</>
+							)}
+						</IonLabel>
+						<IonButton
+							slot='end'
+							onClick={async () => {
+								await setDoc(doc(firestore, 'trade', uid), { ...tradeOffer, active: false } as TradeOfferModel)
+								router.push(`/trade/my-offers`, 'back', 'pop')
+							}}
+						>
+							Accept Bid
+						</IonButton>
+					</IonItem>
+				</IonFooter>
+			)}
 		</IonPage>
 	)
 }

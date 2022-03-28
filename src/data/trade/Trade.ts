@@ -1,4 +1,4 @@
-import { OrderByDirection, Timestamp } from 'firebase/firestore'
+import { Timestamp } from 'firebase/firestore'
 
 export type TradeOfferModel = {
 	uid: string
@@ -13,7 +13,7 @@ export type TradeOfferModel = {
 	email?: string
 	active: boolean
 	posted?: Timestamp
-	conversations: TradeConversationModel[]
+	bestBid?: { price: number; email: string }
 }
 
 export const tradeCategories = [
@@ -38,17 +38,6 @@ export const tradeCategories = [
 ] as const
 
 export type TradeCategoryModel = typeof tradeCategories[number]
-
-export type TradeConversationModel = {
-	messages: {
-		contact: {
-			name: string
-			email: string
-			photoUrl: string
-		}
-		message: string
-	}[]
-}
 
 export const sortTypes = ['posted-desc', 'posted-asc', 'title-desc', 'title-asc', 'price-desc', 'price-asc'] as const
 

@@ -3,10 +3,13 @@ import {
 	IonButton,
 	IonButtons,
 	IonContent,
+	IonFooter,
 	IonHeader,
 	IonIcon,
+	IonInput,
 	IonItem,
 	IonItemDivider,
+	IonLabel,
 	IonList,
 	IonPage,
 	IonTitle,
@@ -28,15 +31,18 @@ import LoadingPage from '../LoadingPage'
 const TradeOfferPage: React.FC = () => {
 	const { uid } = useParams<{ uid: string }>()
 	const { user, userData } = useContext(AppContext)
-	const [tradeOffer] = useSubDoc<TradeOfferModel>(doc(firestore, 'trade', uid))
+	const [tradeOffer, _, setTradeOfferDoc] = useSubDoc<TradeOfferModel>(doc(firestore, 'trade', uid))
 
 	const [srcs, setSrcs] = useState<string[]>([])
+	const [bestBidPrice, setBestBidPrice] = useState(tradeOffer?.bestBid?.price ?? 0)
 
 	useEffect(() => {
-		if (tradeOffer)
+		if (tradeOffer) {
 			listAll(ref(storage, `/trade/${tradeOffer.uid}/media`)).then(async ({ items }) =>
 				setSrcs(await Promise.all(items.map(async (item) => getDownloadURL(item))))
 			)
+			setBestBidPrice(tradeOffer.bestBid?.price ?? 0)
+		}
 	}, [tradeOffer?.uid])
 
 	if (!tradeOffer) return <LoadingPage />
@@ -74,7 +80,7 @@ const TradeOfferPage: React.FC = () => {
 				<ImgOrVidSlides slideSrcs={srcs} />
 				<IonList lines='none'>
 					<IonItem>
-						<b slot='start'>Price:</b>
+						<b slot='start'>Asking Price:</b>
 						<p slot='end'>${tradeOffer.price}</p>
 					</IonItem>
 					<IonItem>
@@ -126,6 +132,25 @@ const TradeOfferPage: React.FC = () => {
 					)}
 				</IonList>
 			</IonContent>
+			<IonFooter>
+				<IonItem>
+					<IonLabel slot='start'>$</IonLabel>
+					<IonInput
+						min={tradeOffer.bestBid?.price ?? 0}
+						type='number'
+						inputMode='decimal'
+						value={bestBidPrice}
+						onIonChange={(e) => setBestBidPrice(+(e.detail.value ?? 0))}
+					/>
+					<IonButton
+						slot='end'
+						disabled={bestBidPrice <= (tradeOffer.bestBid?.price ?? 0)}
+						onClick={() => setTradeOfferDoc({ ...tradeOffer, bestBid: { price: bestBidPrice, email: user?.email ?? '' } } as TradeOfferModel)}
+					>
+						Make Bid
+					</IonButton>
+				</IonItem>
+			</IonFooter>
 		</IonPage>
 	)
 }
