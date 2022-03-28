@@ -38,8 +38,7 @@ const ProfileQRModal: React.FC<ProfileQRModalProps> = ({ hideQRModal }) => {
 	const [qrCodeUrl, setQrCodeUrl] = useState('')
 
 	useEffect(() => {
-		if (user?.email)
-			QRCode.toDataURL(JSON.stringify({ alpha: getAlpha(user.email), company: userData?.company }), { scale: 16 }).then((url) => setQrCodeUrl(url))
+		if (user?.email) QRCode.toDataURL(JSON.stringify({ email: user.email, company: userData?.company }), { scale: 16 }).then((url) => setQrCodeUrl(url))
 	}, [user?.email, userData?.company])
 
 	return (

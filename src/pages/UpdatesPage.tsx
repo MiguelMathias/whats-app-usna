@@ -18,7 +18,7 @@ type UpdatesPageProps = {
 const UpdatesPage: React.FC<UpdatesPageProps> = ({ dept, filterForUser, title }) => {
 	const { user, userData } = useContext(AppContext)
 	const userQueryArray = ['all']
-	if (user?.email) userQueryArray.push(getAlpha(user.email))
+	if (user?.email) userQueryArray.push(user.email)
 	if (userData?.company) userQueryArray.push(userData.company.toString())
 	const updatesQuery = filterForUser
 		? query(collection(firestore, 'updates'), where('midsAndCos', 'array-contains-any', userQueryArray), orderBy('posted', 'desc'))
