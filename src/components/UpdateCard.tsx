@@ -1,11 +1,13 @@
-import { getDownloadURL, listAll, ref } from '@firebase/storage'
 import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonLabel, IonRouterLink } from '@ionic/react'
+import { getDownloadURL, listAll, ref } from 'firebase/storage'
 import { Markup } from 'interweave'
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
 import { updateCaptionHTML } from '../data/mfsd/MFSD'
 import { UpdateModel } from '../data/Update'
 import { storage } from '../Firebase'
 import ImgOrVidSlides from './ImgOrVidSlides'
+import './UpdateCard.scss'
 
 type UpdateCardProps = {
 	update: UpdateModel
@@ -13,6 +15,8 @@ type UpdateCardProps = {
 
 const UpdateCard: React.FC<UpdateCardProps> = ({ update }) => {
 	const [srcs, setSrcs] = useState<string[]>([])
+	const location = useLocation()
+
 	useEffect(() => {
 		listAll(ref(storage, `/updates/${update.uid}/media`)).then(async ({ items }) =>
 			setSrcs(await Promise.all(items.map(async (item) => getDownloadURL(item))))
@@ -23,7 +27,7 @@ const UpdateCard: React.FC<UpdateCardProps> = ({ update }) => {
 		<IonCard>
 			<ImgOrVidSlides slideSrcs={srcs} />
 			<IonCardHeader>
-				<IonRouterLink routerLink={`/${update.dept}/updates/${update.uid}`}>
+				<IonRouterLink routerLink={location.pathname + `/${update.uid}`}>
 					<IonCardTitle>{update.title}</IonCardTitle>
 				</IonRouterLink>
 			</IonCardHeader>
@@ -33,18 +37,6 @@ const UpdateCard: React.FC<UpdateCardProps> = ({ update }) => {
 						<Markup content={updateCaptionHTML(update.caption)} />
 					</div>
 				</IonLabel>
-				<br />
-				<div style={{ textAlign: 'right' }}>
-					<IonLabel>
-						{update.instaPostId ? (
-							<a href={`https://www.instagram.com/p/${update.instaPostId}`} target='_blank'>
-								{update.posted?.toDate().toLocaleDateString()}
-							</a>
-						) : (
-							update.posted?.toDate().toLocaleDateString()
-						)}
-					</IonLabel>
-				</div>
 			</IonCardContent>
 		</IonCard>
 	)

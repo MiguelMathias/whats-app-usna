@@ -2,6 +2,8 @@ import { format } from 'date-fns'
 
 export type MapStringType<V> = { [key: string]: V }
 
+export const getAlpha = (midEmail: string) => midEmail.slice(1, 7)
+
 export const capitalize = (s?: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : undefined)
 
 export const distinct = (value: any, index: any, self: string | any[]) => value && self.indexOf(value) === index
@@ -16,7 +18,7 @@ export const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday
 declare global {
 	interface Array<T> {
 		remove(elem: T, item?: T): T | undefined
-		removeIndex(index: number, item?: T): T
+		removeIndex(index: number, item?: T): T[]
 		indexOfValue(elem: T): number
 	}
 }
@@ -29,11 +31,10 @@ if (!Array.prototype.remove) {
 	}
 }
 
-if (!Array.prototype.removeIndex) {
-	Array.prototype.removeIndex = function <T>(this: T[], index: number, item?: T): T {
-		return item ? this.splice(index, 1, item)[0] : this.splice(index, 1)[0]
+if (!Array.prototype.removeIndex)
+	Array.prototype.removeIndex = function <T>(this: T[], index: number, item?: T): T[] {
+		return this.slice(0, index).concat(this.slice(index + 1))
 	}
-}
 
 if (!Array.prototype.indexOfValue)
 	Array.prototype.indexOfValue = function <T>(this: T[], elem: T): number {

@@ -1,8 +1,12 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react'
-import ExploreContainer from '../components/ExploreContainer'
+import FeaturesWaiting from '../components/FeaturesWaiting'
 import './Home.css'
 
-const Home: React.FC = () => {
+type HomePlaceholderProps = {
+	title?: string
+}
+
+const HomePlaceholder: React.FC<HomePlaceholderProps> = ({ title }) => {
 	return (
 		<IonPage>
 			<IonHeader>
@@ -10,19 +14,14 @@ const Home: React.FC = () => {
 					<IonButtons slot='start'>
 						<IonMenuButton />
 					</IonButtons>
-					<IonTitle>Blank</IonTitle>
+					<IonTitle>{title ?? 'Home'}</IonTitle>
 				</IonToolbar>
 			</IonHeader>
 			<IonContent fullscreen>
-				<IonHeader collapse='condense'>
-					<IonToolbar>
-						<IonTitle size='large'>Blank</IonTitle>
-					</IonToolbar>
-				</IonHeader>
-				<ExploreContainer name='penis' />
+				<FeaturesWaiting />
 			</IonContent>
 		</IonPage>
 	)
 }
 
-export default Home
+export default HomePlaceholder

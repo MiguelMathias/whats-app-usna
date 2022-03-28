@@ -29,6 +29,7 @@ import MFSDTabsPage from './pages/mfsd/MFSDTabsPage'
 import MWFTabsPage from './pages/mwf/MWFTabsPage'
 import NABSDTabsPage from './pages/nabsd/NABSDTabsPage'
 import RestaurantTabsPage from './pages/restaurants/RestaurantTabsPage'
+import TradeTabsPage from './pages/trade/TradeTabsPage'
 /* Theme variables */
 import './theme/variables.css'
 import { useSubCollection } from './util/hooks'
@@ -49,9 +50,9 @@ const App: React.FC = () => {
 	useMemo(() => {
 		getToken(messaging, { vapidKey: 'BC-1nDNCDMR549Bp7BXx2zJzPYUOJV-XvggFKRZXtGKtVEHBLP-6l6nVBxFav3ePd6tnsCisSBCsp5xnCEAxHSk' })
 			.then((currentToken) => {
-				if (currentToken && !userData?.deviceTokens?.includes(currentToken))
+				if (currentToken && !userData?.deviceTokens?.includes(currentToken)) {
 					setUserData((userData) => ({ ...userData, deviceTokens: [...(userData?.deviceTokens ?? []), currentToken] } as UserDataModel))
-				else if (!currentToken) console.log('Need permission for notifs.')
+				} else if (!currentToken) console.log('Need permission for notifs.')
 			})
 			.catch((err) => console.error(err))
 	}, [userData?.uid])
@@ -59,7 +60,6 @@ const App: React.FC = () => {
 	useEffect(() => {
 		if (user) {
 			const userDataUnsub = onSnapshot(doc(firestore, 'users', user.uid), (snapshot) => {
-				console.log()
 				if (snapshot.exists()) {
 					const newUserData = snapshot.data() as UserDataModel
 					if (!newUserData.uid) newUserData.uid = user.uid
@@ -68,8 +68,10 @@ const App: React.FC = () => {
 				} else
 					setDoc(doc(firestore, 'users', user.uid), {
 						uid: user.uid,
-						displayName: user.displayName,
-						subbedTopics: ['mfsd', 'mwf', 'nabsd'],
+						email: user.email ?? '',
+						displayName: user.displayName ?? '',
+						subbedTopics: ['mfsd', 'mwf', 'nabsd', 'mids'],
+						company: '',
 					} as UserDataModel)
 			})
 
@@ -102,9 +104,9 @@ const App: React.FC = () => {
 						<SideMenu restaurants={restaurants} />
 						<IonRouterOutlet id='main'>
 							<Route exact path='/'>
-								<Redirect to='/mfsd' />
+								<Redirect to='/mids' />
 							</Route>
-							<Route exact path='/account'>
+							<Route path='/mids'>
 								<Account />
 							</Route>
 							<Route path='/mfsd'>
@@ -115,6 +117,9 @@ const App: React.FC = () => {
 							</Route>
 							<Route path='/nabsd'>
 								<NABSDTabsPage />
+							</Route>
+							<Route path='/trade'>
+								<TradeTabsPage />
 							</Route>
 							<Route path={`/restaurants/:restaurantPathParamB64`}>
 								<RestaurantTabsPage restaurants={restaurants} />

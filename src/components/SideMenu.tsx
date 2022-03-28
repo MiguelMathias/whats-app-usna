@@ -1,6 +1,6 @@
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, useIonRouter, useIonToast } from '@ionic/react'
 import { onMessage } from 'firebase/messaging'
-import { cashOutline, chevronForward, libraryOutline, personOutline, restaurantOutline } from 'ionicons/icons'
+import { cashOutline, chevronForward, libraryOutline, personOutline, restaurantOutline, swapHorizontalOutline } from 'ionicons/icons'
 import React, { useContext } from 'react'
 import { useLocation } from 'react-router'
 import { AppContext } from '../AppContext'
@@ -34,6 +34,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 			{ title: 'MWF', path: '/mwf', icon: cashOutline },
 			{ title: 'NABSD', path: '/nabsd', icon: libraryOutline },
 		] as Pages[],
+		tradePages: [{ title: 'Trade', path: '/trade', icon: swapHorizontalOutline }] as Pages[],
 		restaurantPages: restaurants.map(
 			(restaurant) =>
 				({
@@ -59,7 +60,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 		accountPages: [
 			{
 				title: user ? 'Account' : 'Log In',
-				path: '/account',
+				path: '/mids',
 				icon: personOutline,
 			},
 			//TODO: remove this comment and figure out the feedback page
@@ -127,19 +128,25 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 		<IonMenu swipeGesture type='push' contentId='main'>
 			<IonContent forceOverscroll={false}>
 				<IonList lines='none'>
+					<IonListHeader>Account</IonListHeader>
+					{renderListItems(routes.accountPages)}
+				</IonList>
+				<IonList lines='none'>
 					<IonListHeader>USNA</IonListHeader>
 					{renderListItems(routes.appPages)}
 				</IonList>
-				{!!routes.restaurantPages.length /* TODO: only for production, restaurants not ready */ && (
+				{!!routes.restaurantPages.length && user && !user.isAnonymous /* TODO: only for production, restaurants not ready */ && (
 					<IonList lines='none'>
 						<IonListHeader>Restaurants</IonListHeader>
 						{renderListItems(routes.restaurantPages)}
 					</IonList>
 				)}
-				<IonList lines='none'>
-					<IonListHeader>Account</IonListHeader>
-					{renderListItems(routes.accountPages)}
-				</IonList>
+				{!!routes.tradePages.length && user && !user.isAnonymous && (
+					<IonList lines='none'>
+						<IonListHeader>MidBay</IonListHeader>
+						{renderListItems(routes.tradePages)}
+					</IonList>
+				)}
 			</IonContent>
 		</IonMenu>
 	)

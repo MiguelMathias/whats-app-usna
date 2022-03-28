@@ -36,9 +36,7 @@ const RestaurantItemCard: React.FC<RestaurantItemCardProps> = ({ restaurantBagIt
 					<IonRouterLink routerLink={`/restaurants/${restaurantPathParamB64}/menu/${restaurantBagItemB64Url}`}>
 						<IonCardTitle class='ion-text-left'>{restaurantBagItem.restaurantItem.name}</IonCardTitle>
 					</IonRouterLink>
-					<IonButtons>
-						<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} userFavoriteItems={userFavoriteItems} />
-					</IonButtons>
+					<RestaurantItemFavoriteButton restaurantBagItem={restaurantBagItem} userFavoriteItems={userFavoriteItems} />
 				</div>
 			</IonCardHeader>
 			<IonCardContent>

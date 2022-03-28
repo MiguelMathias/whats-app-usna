@@ -1,4 +1,4 @@
-import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react'
+import { IonBadge, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react'
 import { collection, CollectionReference, DocumentData, onSnapshot, orderBy, query, QueryConstraint, where } from 'firebase/firestore'
 import { bag, calendar, receipt, star } from 'ionicons/icons'
 import { useContext, useEffect, useState } from 'react'
@@ -16,6 +16,7 @@ import RestaurantItemPage from './RestaurantItemPage'
 import RestaurantMainMenuPage from './RestaurantMainMenuPage'
 import RestaurantOrderPage from './RestaurantOrderPage'
 import RestaurantOrdersPage from './RestaurantOrdersPage'
+import './RestaurantTabsPage.scss'
 
 type RestaurantTabsPageProps = {
 	restaurants: RestaurantModel[]
@@ -134,7 +135,14 @@ const RestaurantTabsPage: React.FC<RestaurantTabsPageProps> = ({ restaurants }) 
 					<IonLabel>Favorites</IonLabel>
 				</IonTabButton>
 				<IonTabButton tab='bag' href={`/restaurants/${restaurantPathParamB64}/bag`}>
-					<IonIcon icon={bag} />
+					{userBagItems.length ? (
+						<>
+							<IonBadge className='icon-badge'>{userBagItems.length}</IonBadge>
+							<IonIcon className='icon-badge-icon' icon={bag} />
+						</>
+					) : (
+						<IonIcon icon={bag} />
+					)}
 					<IonLabel>Bag</IonLabel>
 				</IonTabButton>
 				<IonTabButton tab='orders' href={`/restaurants/${restaurantPathParamB64}/orders`}>

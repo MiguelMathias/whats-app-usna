@@ -9,12 +9,13 @@ import { firestore, storage } from '../Firebase'
 import { useSubDoc } from '../util/hooks'
 
 type UpdatePageProps = {
-	dept: 'mfsd' | 'mwf' | 'nabsd'
+	dept: string
+	title?: string
 }
 
-const UpdatePage: React.FC<UpdatePageProps> = ({ dept }) => {
+const UpdatePage: React.FC<UpdatePageProps> = ({ dept, title }) => {
 	const { updateUid } = useParams<{ updateUid: string }>()
-	const [update] = useSubDoc<UpdateModel>(doc(firestore, 'updates', updateUid))
+	const [update] = useSubDoc<UpdateModel>(doc(firestore, 'updates', updateUid), [updateUid])
 	const [srcs, setSrcs] = useState<string[]>([])
 	useEffect(() => {
 		if (update)
@@ -31,7 +32,7 @@ const UpdatePage: React.FC<UpdatePageProps> = ({ dept }) => {
 						<IonBackButton defaultHref={`/${dept}/updates`} />
 					</IonButtons>
 					<IonTitle>
-						{dept.toUpperCase()}: {update?.title}
+						{title ?? dept.toUpperCase()}: {update?.title}
 					</IonTitle>
 				</IonToolbar>
 			</IonHeader>

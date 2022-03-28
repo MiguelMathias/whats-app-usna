@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth'
 import { CACHE_SIZE_UNLIMITED, enableIndexedDbPersistence, initializeFirestore } from 'firebase/firestore'
 import { getMessaging } from 'firebase/messaging'
-import { getStorage } from 'firebase/storage'
+import { deleteObject, FirebaseStorage, getStorage, listAll, ref } from 'firebase/storage'
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyD6luQ46FnJxHg4tT8zvS3gzsPOJTEC1eQ',
@@ -24,3 +24,19 @@ export const messaging = getMessaging(firebaseApp)
 
 setPersistence(auth, browserLocalPersistence)
 enableIndexedDbPersistence(firestore)
+
+export const deleteStorageFolder = async (storage: FirebaseStorage, path: string) => {
+	const folderRef = ref(storage, path)
+	const dir = await listAll(folderRef)
+
+	await Promise.all([
+		...dir.items.map((fileRef) => {
+			deleteStorageFile(storage, fileRef.fullPath)
+		}),
+		...dir.prefixes.map((folderRef) => {
+			deleteStorageFolder(storage, folderRef.fullPath)
+		}),
+	])
+}
+
+export const deleteStorageFile = (storage: FirebaseStorage, path: string) => deleteObject(ref(storage, path))

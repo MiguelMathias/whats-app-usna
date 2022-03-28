@@ -18,7 +18,7 @@ const ImgOrVidSlides: React.FC<ImgSlidesProps> = ({ slideSrcs, maxImgHeight }) =
 			slideIndex={slideIndex}
 			afterSlide={(slideIndex) => setSlideIndex(slideIndex)}
 			renderCenterLeftControls={({ previousSlide }) =>
-				isDesktop ? (
+				isDesktop && slideSrcs.length > 1 ? (
 					<IonButtons>
 						<IonButton disabled={slideIndex === 0} shape='round' fill='solid' color='light' onClick={previousSlide}>
 							<IonIcon slot='icon-only' color='dark' icon={chevronBackOutline} />
@@ -27,7 +27,7 @@ const ImgOrVidSlides: React.FC<ImgSlidesProps> = ({ slideSrcs, maxImgHeight }) =
 				) : undefined
 			}
 			renderCenterRightControls={({ nextSlide }) =>
-				isDesktop ? (
+				isDesktop && slideSrcs.length > 1 ? (
 					<IonButtons>
 						<IonButton disabled={slideIndex === slideSrcs.length - 1} shape='round' fill='solid' color='light' onClick={nextSlide}>
 							<IonIcon slot='icon-only' color='dark' icon={chevronForwardOutline} />

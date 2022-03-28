@@ -15,6 +15,7 @@ import {
 	IonToolbar,
 	useIonPopover,
 } from '@ionic/react'
+import { format } from 'date-fns'
 import { doc } from 'firebase/firestore'
 import { alertCircleOutline, informationCircleOutline } from 'ionicons/icons'
 import React, { useState } from 'react'
@@ -89,7 +90,7 @@ const MFSDMenuPage: React.FC = () => {
 						<AccordionIonItem
 							key={i}
 							header={day.name}
-							initiallyOpen={i < days.length && day.name.toLowerCase().includes(days[new Date().getDay()])}
+							initiallyOpen={i < days.length && day.name.toLowerCase().includes(format(new Date(), 'M/d'))}
 						>
 							<IonList>
 								{[day.breakfast, day.lunch, day.dinner].map((meal, i) => (
@@ -98,7 +99,7 @@ const MFSDMenuPage: React.FC = () => {
 											<h2>
 												<b>{['Breakfast', 'Lunch', 'Dinner'][i]}</b>
 											</h2>
-											{meal !== "King's Court" && (meal?.mealItems.length ?? 0) > 0 && (
+											{meal !== "King's Court" && (meal?.mealItems?.length ?? 0) > 0 && (
 												<IonButtons slot='end'>
 													<IonButton
 														onClick={(e) => {
@@ -118,12 +119,12 @@ const MFSDMenuPage: React.FC = () => {
 												</IonButtons>
 											)}
 										</IonItem>
-										{meal === "King's Court" || !meal || meal?.mealItems.length === 0 ? (
+										{meal === "King's Court" || !meal || meal?.mealItems?.length === 0 ? (
 											<IonItem lines='none'>
 												<IonLabel>{meal}</IonLabel>
 											</IonItem>
 										) : (
-											meal?.mealItems.map((mealItem, j) => (
+											meal?.mealItems?.map((mealItem, j) => (
 												<IonItem key={j} lines='none'>
 													<p>{mealItem.name}</p>
 													<IonButtons slot='end'>
@@ -167,7 +168,7 @@ const MFSDMenuPage: React.FC = () => {
 										)}
 									</React.Fragment>
 								))}
-								{!![day.breakfast, day.lunch, day.dinner].find((meal) => meal !== "King's Court" && (meal?.mealItems.length ?? 0) > 0) && (
+								{!![day.breakfast, day.lunch, day.dinner].find((meal) => meal !== "King's Court" && (meal?.mealItems?.length ?? 0) > 0) && (
 									<IonItemDivider>
 										<IonLabel color='dark'>
 											<b>Daily Totals</b>

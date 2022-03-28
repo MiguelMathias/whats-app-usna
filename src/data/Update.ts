@@ -7,5 +7,5 @@ export type UpdateModel = {
 	title?: string
 	caption?: string
 	posted?: Timestamp
-	instaPostId?: string
+	midsAndCos: string[]
 }

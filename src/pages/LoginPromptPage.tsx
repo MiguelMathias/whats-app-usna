@@ -1,14 +1,4 @@
-import {
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonLabel,
-	IonMenuButton,
-	IonPage,
-	IonRouterLink,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/react'
+import { IonButtons, IonContent, IonHeader, IonLabel, IonMenuButton, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react'
 
 const LoginPromptPage: React.FC = () => (
 	<IonPage>
@@ -31,7 +21,7 @@ const LoginPromptPage: React.FC = () => (
 				}}
 			>
 				<IonLabel style={{ textAlign: 'center' }}>
-					You must <IonRouterLink routerLink='/account'>Log In</IonRouterLink> to order from restaurants!
+					You must <IonRouterLink routerLink='/mids'>Log In</IonRouterLink> to order from restaurants!
 				</IonLabel>
 			</div>
 		</IonContent>

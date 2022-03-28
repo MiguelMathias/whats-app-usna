@@ -10,7 +10,7 @@ export const useForceUpdate = () => {
 
 export const useSubDoc = <T>(
 	doc: DocumentReference<DocumentData>,
-	deps: React.DependencyList | undefined = []
+	deps: React.DependencyList = []
 ): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, (data: T) => Promise<void>] => {
 	const [docData, setDocData] = useState<T>()
 	useEffect(() => onSnapshot(doc, (snapshot) => setDocData(snapshot.data() as T)), deps)
@@ -19,7 +19,7 @@ export const useSubDoc = <T>(
 
 export const useSubCollection = <T>(
 	collection: Query<DocumentData> | CollectionReference<DocumentData>,
-	deps: React.DependencyList | undefined = []
+	deps: React.DependencyList = []
 ): [T[], React.Dispatch<React.SetStateAction<T[]>>] => {
 	const [collectionData, setCollectionData] = useState<T[]>([])
 	useEffect(() => onSnapshot(collection, (snapshot) => setCollectionData(snapshot.docs.map((doc) => doc.data() as T))), deps)

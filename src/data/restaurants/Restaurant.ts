@@ -101,8 +101,8 @@ export const getRestaurantHours = (restaurant: RestaurantModel, date: Date = new
 	const day = daysOfWeek[getDay(date)]
 	if (restaurant.hours[day]) {
 		const [open, close] = [restaurant.hours[day].open, restaurant.hours[day].close]
-		const [openHrs, openMins] = [parseInt(open.slice(0, 2)), parseInt(open.slice(2))]
-		const [closeHrs, closeMins] = [parseInt(close.slice(0, 2)), parseInt(close.slice(2))]
+		const [openHrs, openMins] = [parseInt(open.slice(0, 2)), parseInt(open.slice(3))]
+		const [closeHrs, closeMins] = [parseInt(close.slice(0, 2)), parseInt(close.slice(3))]
 		return {
 			start: setHours(setMinutes(setSeconds(date, 0), openMins), openHrs),
 			end: setHours(setMinutes(setSeconds(date, 0), closeMins), closeHrs),

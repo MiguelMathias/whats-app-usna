@@ -1,7 +1,7 @@
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react'
 import { homeOutline, newspaperOutline } from 'ionicons/icons'
 import { Redirect, Route } from 'react-router'
-import Home from '../Home'
+import HomePlaceholder from '../Home'
 import UpdatePage from '../UpdatePage'
 import UpdatesPage from '../UpdatesPage'
 
@@ -9,7 +9,7 @@ const NABSDTabsPage: React.FC = () => (
 	<IonTabs>
 		<IonRouterOutlet>
 			<Route exact path='/nabsd/home'>
-				<Home />
+				<HomePlaceholder title='NABSD Home' />
 			</Route>
 			<Route exact path='/nabsd/updates'>
 				<UpdatesPage dept='nabsd' />

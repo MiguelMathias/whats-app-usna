@@ -8,7 +8,6 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
-import { onBackgroundMessage } from 'firebase/messaging/sw'
 import { clientsClaim } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
@@ -79,7 +78,7 @@ self.addEventListener('message', (event) => {
 })
 
 // Any other custom service worker logic can go here.
-onBackgroundMessage(messaging, (payload) => {
+/* onBackgroundMessage(messaging, (payload) => {
 	console.log('Received background message in main sw', payload)
 
 	const notificationTitle = payload.notification?.title
@@ -89,4 +88,4 @@ onBackgroundMessage(messaging, (payload) => {
 	} as NotificationOptions
 
 	self.registration.showNotification(notificationTitle ?? '', notificationOptions)
-})
+}) */
