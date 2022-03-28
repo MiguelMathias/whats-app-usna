@@ -84,7 +84,7 @@ const TradeMyOfferPage: React.FC = () => {
 				category.current = newTradeOffer.category
 				description.current = newTradeOffer.description
 				price.current = newTradeOffer.price
-				archived.current = newTradeOffer.active
+				archived.current = !newTradeOffer.active
 
 				setRoomNoVisible(!!newTradeOffer?.roomNumber)
 				setPhoneNoVisible(!!newTradeOffer?.phoneNumber)
