@@ -21,7 +21,7 @@ import { signOut } from 'firebase/auth'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { checkmarkOutline, qrCodeOutline } from 'ionicons/icons'
 import QRCode from 'qrcode'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { AppContext } from '../../AppContext'
 import { setUserDataDoc, UserDataModel } from '../../data/account/User'
 import { auth, firestore } from '../../Firebase'
@@ -67,8 +67,8 @@ const Profile: React.FC = () => {
 	const [roomNo, setRoomNo] = useState<string>()
 	const [phoneNo, setPhoneNo] = useState<string>()
 	const [venmoId, setVenmoId] = useState<string>()
-	const forceUpdate = useForceUpdate()
 	const [showQRModal, hideQRModal] = useIonModal(<ProfileQRModal hideQRModal={() => hideQRModal()} />)
+	const contentRef = useRef<HTMLIonContentElement | null>(null)
 
 	useEffect(() => {
 		if (user)
@@ -92,13 +92,13 @@ const Profile: React.FC = () => {
 					</IonButtons>
 					<IonTitle>Account</IonTitle>
 					<IonButtons slot='end'>
-						<IonButton onClick={() => showQRModal({ swipeToClose: true })}>
+						<IonButton onClick={() => showQRModal({ swipeToClose: true, presentingElement: contentRef.current ?? undefined })}>
 							<IonIcon slot='icon-only' icon={qrCodeOutline} />
 						</IonButton>
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent fullscreen>
+			<IonContent fullscreen ref={contentRef}>
 				<div style={{ textAlign: 'center', marginTop: 20 }}>
 					<img src={user.photoURL ?? undefined} alt='Profile Picture' style={{ borderRadius: '50%' }} />
 				</div>

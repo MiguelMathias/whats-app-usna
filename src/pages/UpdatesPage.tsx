@@ -11,18 +11,23 @@ import { distinct, getAlpha } from '../util/misc'
 
 type UpdatesPageProps = {
 	dept: string
-	filterForUser?: boolean
 	title?: string
 }
 
-const UpdatesPage: React.FC<UpdatesPageProps> = ({ dept, filterForUser, title }) => {
+const UpdatesPage: React.FC<UpdatesPageProps> = ({ dept, title }) => {
 	const { user, userData } = useContext(AppContext)
 	const userQueryArray = ['all']
-	if (user?.email) userQueryArray.push(user.email)
+	if (user?.email) {
+		userQueryArray.push(user.email)
+		userQueryArray.push(`20${user.email.slice(1, 3)}`)
+	}
 	if (userData?.company) userQueryArray.push(userData.company.toString())
-	const updatesQuery = filterForUser
-		? query(collection(firestore, 'updates'), where('midsAndCos', 'array-contains-any', userQueryArray), orderBy('posted', 'desc'))
-		: query(collection(firestore, 'updates'), where('dept', '==', dept), orderBy('posted', 'desc'))
+	const updatesQuery = query(
+		collection(firestore, 'updates'),
+		where('dept', '==', dept),
+		where('midsAndCos', 'array-contains-any', userQueryArray),
+		orderBy('posted', 'desc')
+	)
 
 	const [updates] = useSubCollection<UpdateModel>(updatesQuery)
 
