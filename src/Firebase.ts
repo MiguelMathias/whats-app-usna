@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth'
-import { CACHE_SIZE_UNLIMITED, enableIndexedDbPersistence, initializeFirestore } from 'firebase/firestore'
+import { CACHE_SIZE_UNLIMITED, enableMultiTabIndexedDbPersistence, initializeFirestore } from 'firebase/firestore'
 import { getMessaging } from 'firebase/messaging'
 import { deleteObject, FirebaseStorage, getStorage, listAll, ref } from 'firebase/storage'
 
@@ -23,7 +23,7 @@ export const auth = getAuth(firebaseApp)
 export const messaging = getMessaging(firebaseApp)
 
 setPersistence(auth, browserLocalPersistence)
-enableIndexedDbPersistence(firestore)
+enableMultiTabIndexedDbPersistence(firestore)
 
 export const deleteStorageFolder = async (storage: FirebaseStorage, path: string) => {
 	const folderRef = ref(storage, path)
