@@ -144,7 +144,7 @@ const TradeOfferPage: React.FC = () => {
 					/>
 					<IonButton
 						slot='end'
-						disabled={bestBidPrice <= (tradeOffer.bestBid?.price ?? 0)}
+						disabled={tradeOffer.bestBid?.price === 0 ? bestBidPrice < 0 : bestBidPrice <= (tradeOffer.bestBid?.price ?? 0)}
 						onClick={() => setTradeOfferDoc({ ...tradeOffer, bestBid: { price: bestBidPrice, email: user?.email ?? '' } } as TradeOfferModel)}
 					>
 						Make Bid
