@@ -51,7 +51,7 @@ const ProfileQRModal: React.FC<ProfileQRModalProps> = ({ hideQRModal }) => {
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				{qrCodeUrl && (
 					<div style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 						<img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={qrCodeUrl} />

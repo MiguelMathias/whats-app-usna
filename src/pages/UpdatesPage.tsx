@@ -45,13 +45,13 @@ const UpdatesPage: React.FC<UpdatesPageProps> = ({ dept, title }) => {
 				</IonToolbar>
 			</IonHeader>
 			{updates.length === 0 ? (
-				<IonContent>
+				<IonContent fullscreen>
 					<div style={{ minHeight: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
 						<p>No updates right now! Come back later.</p>
 					</div>
 				</IonContent>
 			) : (
-				<IonContent>
+				<IonContent fullscreen>
 					{allCategories().length > 0 && (
 						<IonItem color='light'>
 							<IonLabel>Category</IonLabel>

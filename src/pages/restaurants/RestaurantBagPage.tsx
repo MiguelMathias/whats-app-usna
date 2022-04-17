@@ -98,7 +98,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userB
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<IonDatetime
 					style={{ minWidth: '100%' }}
 					min={format(minPickupTime(), 'yyyy-MM-dd')}

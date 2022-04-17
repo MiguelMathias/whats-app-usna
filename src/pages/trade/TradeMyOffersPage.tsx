@@ -30,7 +30,7 @@ const TradeMyOffersPage: React.FC = () => {
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<TradeOffersGrid isMine={true} tradeOffers={tradeOffers} />
 			</IonContent>
 		</IonPage>

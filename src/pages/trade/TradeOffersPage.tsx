@@ -47,7 +47,7 @@ const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ tradeOffers, sort, se
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<IonList>
 					<IonRadioGroup value={sort} onIonChange={(e) => setSort(e.detail.value)}>
 						{sortTypes.map((sortType, i) => (
@@ -76,7 +76,7 @@ const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ tradeOffers, sort, se
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<IonList>
 					<IonItem>
 						<IonButton slot='end' onClick={() => setCategories(categories.length === tradeCategories.length ? [] : tradeCategories.map((c) => c))}>
@@ -120,7 +120,7 @@ const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ tradeOffers, sort, se
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent>
+			<IonContent fullscreen>
 				<IonItem color='light'>
 					<IonIcon slot='start' icon={searchOutline} />
 					<IonInput inputMode='search' type='search' enterkeyhint='search' onIonChange={(e) => setSearchText(e.detail.value ?? '')} />
