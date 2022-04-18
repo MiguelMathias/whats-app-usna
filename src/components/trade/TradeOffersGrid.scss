@@ -2,8 +2,8 @@
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;
-	padding: 0 20px 0 0;
 }
+
 ion-card {
 	margin-top: 10px;
 	vertical-align: middle;
@@ -19,6 +19,10 @@ ion-card {
 	.col {
 		flex: 50%;
 		max-width: 50%;
+		padding-right: 10px;
+	}
+	.row {
+		padding-right: 10px;
 	}
 }
 
@@ -27,5 +31,9 @@ ion-card {
 	.col {
 		flex: 100%;
 		max-width: 100%;
+		padding-right: 10px;
+	}
+	.row {
+		padding-right: 10px;
 	}
 }
