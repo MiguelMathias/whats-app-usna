@@ -2,7 +2,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;
-	padding: 0 4px;
+	padding: 0 20px 0 0;
 }
 ion-card {
 	margin-top: 10px;
@@ -13,14 +13,12 @@ ion-card {
 .col {
 	flex: 33%;
 	max-width: 33%;
-	padding: 0 4px;
 }
 
 @media screen and (max-width: 800px) {
 	.col {
 		flex: 50%;
 		max-width: 50%;
-		padding: 0 4px;
 	}
 }
 
@@ -29,6 +27,5 @@ ion-card {
 	.col {
 		flex: 100%;
 		max-width: 100%;
-		padding: 0 4px;
 	}
 }
