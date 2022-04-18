@@ -132,25 +132,27 @@ const TradeOfferPage: React.FC = () => {
 					)}
 				</IonList>
 			</IonContent>
-			<IonFooter>
-				<IonItem>
-					<IonLabel slot='start'>$</IonLabel>
-					<IonInput
-						min={tradeOffer.bestBid?.price ?? 0}
-						type='number'
-						inputMode='decimal'
-						value={bestBidPrice}
-						onIonChange={(e) => setBestBidPrice(+(e.detail.value ?? 0))}
-					/>
-					<IonButton
-						slot='end'
-						disabled={tradeOffer.bestBid?.price === 0 ? bestBidPrice < 0 : bestBidPrice <= (tradeOffer.bestBid?.price ?? 0)}
-						onClick={() => setTradeOfferDoc({ ...tradeOffer, bestBid: { price: bestBidPrice, email: user?.email ?? '' } } as TradeOfferModel)}
-					>
-						Make Bid
-					</IonButton>
-				</IonItem>
-			</IonFooter>
+			{tradeOffer.posterUid !== user?.uid && (
+				<IonFooter>
+					<IonItem>
+						<IonLabel slot='start'>$</IonLabel>
+						<IonInput
+							min={tradeOffer.bestBid?.price ?? 0}
+							type='number'
+							inputMode='decimal'
+							value={bestBidPrice}
+							onIonChange={(e) => setBestBidPrice(+(e.detail.value ?? 0))}
+						/>
+						<IonButton
+							slot='end'
+							disabled={tradeOffer.bestBid?.price === 0 ? bestBidPrice < 0 : bestBidPrice <= (tradeOffer.bestBid?.price ?? 0)}
+							onClick={() => setTradeOfferDoc({ ...tradeOffer, bestBid: { price: bestBidPrice, email: user?.email ?? '' } } as TradeOfferModel)}
+						>
+							Make Bid
+						</IonButton>
+					</IonItem>
+				</IonFooter>
+			)}
 		</IonPage>
 	)
 }

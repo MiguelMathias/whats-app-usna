@@ -1,4 +1,16 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react'
+import {
+	IonButton,
+	IonButtons,
+	IonContent,
+	IonHeader,
+	IonIcon,
+	IonInfiniteScroll,
+	IonInfiniteScrollContent,
+	IonMenuButton,
+	IonPage,
+	IonTitle,
+	IonToolbar,
+} from '@ionic/react'
 import { collection, orderBy, query, where } from 'firebase/firestore'
 import { addOutline } from 'ionicons/icons'
 import { useContext } from 'react'
@@ -8,7 +20,11 @@ import { TradeOfferModel } from '../../data/trade/Trade'
 import { firestore } from '../../Firebase'
 import { useSubCollection } from '../../util/hooks'
 
-const TradeMyOffersPage: React.FC = () => {
+type TradeMyOffersPageProps = {
+	onInfinite?: () => void
+}
+
+const TradeMyOffersPage: React.FC<TradeMyOffersPageProps> = ({ onInfinite }) => {
 	const { user } = useContext(AppContext)
 	const [tradeOffers] = useSubCollection<TradeOfferModel>(
 		query(collection(firestore, 'trade'), where('posterUid', '==', user?.uid ?? 'nil'), orderBy('posted', 'desc')),

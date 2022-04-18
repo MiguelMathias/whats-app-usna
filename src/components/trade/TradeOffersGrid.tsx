@@ -1,6 +1,7 @@
-import { IonCol, IonGrid, IonRow } from '@ionic/react'
+import React from 'react'
 import { TradeCategoryModel, TradeOfferModel } from '../../data/trade/Trade'
 import TradeOfferCard from './TradeOfferCard'
+import './TradeOffersGrid.scss'
 
 type TradeOffersGridProps = {
 	isMine?: boolean
@@ -27,18 +28,17 @@ const TradeOffersGrid: React.FC<TradeOffersGridProps> = ({ isMine, tradeOffers, 
 			<p>No offers right now! Make one, or come back later.</p>
 		</div>
 	) : (
-		<IonGrid>
-			<IonRow>
-				{tradeOffers.map(
-					(tradeOffer, i) =>
-						shoudDisplay(tradeOffer) && (
-							<IonCol key={i} sizeSm='12' sizeMd='6' sizeLg='4'>
-								<TradeOfferCard isMine={isMine} tradeOffer={tradeOffer} />
-							</IonCol>
-						)
-				)}
-			</IonRow>
-		</IonGrid>
+		<div className='row'>
+			{tradeOffers.map((tradeOffer, i) => (
+				<React.Fragment key={i}>
+					{shoudDisplay(tradeOffer) && (
+						<div className='col'>
+							<TradeOfferCard isMine={isMine} tradeOffer={tradeOffer} />
+						</div>
+					)}
+				</React.Fragment>
+			))}
+		</div>
 	)
 }
 

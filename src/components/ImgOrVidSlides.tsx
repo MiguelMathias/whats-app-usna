@@ -45,7 +45,7 @@ const ImgOrVidSlides: React.FC<ImgSlidesProps> = ({ slideSrcs, maxImgHeight }) =
 					) : (
 						<img
 							style={{
-								maxHeight: maxImgHeight || undefined,
+								maxHeight: maxImgHeight,
 								objectFit: 'cover',
 								width: '100%',
 								height: '100%',

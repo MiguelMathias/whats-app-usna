@@ -13,6 +13,12 @@ export const decodeB64Url = <T>(strToDecode: string) => JSON.parse(atob(decodeUR
 
 export const formatDateDefault = (date: Date) => format(date, 'EEE, MMM d y H:mm')
 
+export const chunkArray = <T>(arr: T[], size: number) => {
+	var newArr = []
+	for (var i = 0; i < arr.length; i += size) newArr.push(arr.slice(i, i + size))
+	return newArr
+}
+
 export const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 declare global {

@@ -29,7 +29,7 @@ import { Redirect, useParams } from 'react-router'
 import { useEffectOnce } from 'react-use'
 import { AppContext } from '../../AppContext'
 import ImgOrVid from '../../components/ImgOrVid'
-import { tradeCategories as tradeOfferCategories, TradeOfferModel } from '../../data/trade/Trade'
+import { tradeCategories, TradeOfferModel } from '../../data/trade/Trade'
 import { deleteStorageFolder, firestore, storage } from '../../Firebase'
 import LoadingPage from '../LoadingPage'
 
@@ -176,7 +176,7 @@ const TradeMyOfferPage: React.FC = () => {
 					<IonItem>
 						<IonLabel position='stacked'>Category</IonLabel>
 						<IonSelect interface='popover' value={category.current} onIonChange={(e) => (category.current = e.detail.value ?? 'Other')}>
-							{tradeOfferCategories.map((cat, i) => (
+							{tradeCategories.map((cat, i) => (
 								<IonSelectOption key={i} value={cat}>
 									{cat}
 								</IonSelectOption>

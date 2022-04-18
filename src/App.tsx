@@ -70,7 +70,7 @@ const App: React.FC = () => {
 						uid: user.uid,
 						email: user.email ?? '',
 						displayName: user.displayName ?? '',
-						subbedTopics: ['mfsd', 'mwf', 'nabsd', 'mids'],
+						subbedTopics: ['mfsd', 'mwf', 'nabsd', 'mids', 'trade'],
 						company: '',
 					} as UserDataModel)
 			})

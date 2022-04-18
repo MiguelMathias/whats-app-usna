@@ -79,7 +79,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 				{
 					icon: chevronForward,
 					side: 'end',
-					handler: () => router.push(`/${payload.data?.dept}/updates/${payload.data?.uid}`),
+					handler: () => (payload.data ? router.push(payload.data?.url) : (() => {})()),
 				},
 			],
 		})

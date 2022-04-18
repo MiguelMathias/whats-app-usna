@@ -76,7 +76,7 @@ const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ tradeOffers, sort, se
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent fullscreen>
+			<IonContent>
 				<IonList>
 					<IonItem>
 						<IonButton slot='end' onClick={() => setCategories(categories.length === tradeCategories.length ? [] : tradeCategories.map((c) => c))}>

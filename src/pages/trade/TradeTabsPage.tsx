@@ -1,5 +1,5 @@
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react'
-import { collection, orderBy, OrderByDirection, query, where } from 'firebase/firestore'
+import { collection, endAt, limit, orderBy, OrderByDirection, query, where } from 'firebase/firestore'
 import { gridOutline, readerOutline, starOutline } from 'ionicons/icons'
 import { useContext, useState } from 'react'
 import { Redirect, Route } from 'react-router'
@@ -15,9 +15,15 @@ import TradeOffersPage from './TradeOffersPage'
 const TradeTabsPage: React.FC = () => {
 	const { userData } = useContext(AppContext)
 	const [sort, setSort] = useState<SortType>('posted-desc')
+	const [tradeCursor, setTradeCursor] = useState(5)
 	const [activeTradeOffers] = useSubCollection<TradeOfferModel>(
-		query(collection(firestore, 'trade'), orderBy(sort.split('-')[0], sort.split('-')[1] as OrderByDirection), where('active', '==', true)),
-		[sort]
+		query(
+			collection(firestore, 'trade'),
+			orderBy(sort.split('-')[0], sort.split('-')[1] as OrderByDirection),
+			where('active', '==', true)
+			//limit(tradeCursor)
+		),
+		[sort, tradeCursor]
 	)
 	return (
 		<IonTabs>
@@ -36,7 +42,7 @@ const TradeTabsPage: React.FC = () => {
 					/>
 				</Route>
 				<Route exact path='/trade/my-offers'>
-					<TradeMyOffersPage />
+					<TradeMyOffersPage onInfinite={() => setTradeCursor((tradeCursor) => tradeCursor + 12)} />
 				</Route>
 				<Route exact path='/trade/offers/:uid'>
 					<TradeOfferPage />

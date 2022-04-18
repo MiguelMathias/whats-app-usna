@@ -51,7 +51,7 @@ const ProfileQRModal: React.FC<ProfileQRModalProps> = ({ hideQRModal }) => {
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent fullscreen>
+			<IonContent>
 				{qrCodeUrl && (
 					<div style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 						<img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={qrCodeUrl} />
@@ -68,7 +68,7 @@ const Profile: React.FC = () => {
 	const [phoneNo, setPhoneNo] = useState<string>()
 	const [venmoId, setVenmoId] = useState<string>()
 	const [showQRModal, hideQRModal] = useIonModal(<ProfileQRModal hideQRModal={() => hideQRModal()} />)
-	const contentRef = useRef<HTMLIonContentElement | null>(null)
+	const headerRef = useRef<HTMLIonHeaderElement | null>(null)
 
 	useEffect(() => {
 		if (user)
@@ -85,20 +85,20 @@ const Profile: React.FC = () => {
 
 	return (
 		<IonPage>
-			<IonHeader>
+			<IonHeader ref={headerRef}>
 				<IonToolbar>
 					<IonButtons slot='start'>
 						<IonMenuButton />
 					</IonButtons>
 					<IonTitle>Account</IonTitle>
 					<IonButtons slot='end'>
-						<IonButton onClick={() => showQRModal({ swipeToClose: true, presentingElement: contentRef.current ?? undefined })}>
+						<IonButton onClick={() => showQRModal({ swipeToClose: true, presentingElement: headerRef.current ?? undefined })}>
 							<IonIcon slot='icon-only' icon={qrCodeOutline} />
 						</IonButton>
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent fullscreen ref={contentRef}>
+			<IonContent fullscreen>
 				<div style={{ textAlign: 'center', marginTop: 20 }}>
 					<img src={user.photoURL ?? undefined} alt='Profile Picture' style={{ borderRadius: '50%' }} />
 				</div>
@@ -171,14 +171,13 @@ const Profile: React.FC = () => {
 						<IonItem>
 							<IonLabel>Account Update Notifications</IonLabel>
 							<IonToggle
-								checked={userData.subbedTopics?.includes('mids')}
+								checked={(userData.subbedTopics ?? []).includes('mids')}
 								onIonChange={(e) => {
-									if (!userData.subbedTopics) return
 									setUserDataDoc(user, {
 										...userData,
 										subbedTopics: e.detail.checked
-											? userData.subbedTopics.concat('mids')
-											: userData.subbedTopics.filter((topic) => topic !== 'mids'),
+											? (userData.subbedTopics ?? []).concat('mids')
+											: (userData.subbedTopics ?? []).filter((topic) => topic !== 'mids'),
 									})
 								}}
 							/>
@@ -186,14 +185,13 @@ const Profile: React.FC = () => {
 						<IonItem>
 							<IonLabel>MFSD Update Notifications</IonLabel>
 							<IonToggle
-								checked={userData.subbedTopics?.includes('mfsd')}
+								checked={(userData.subbedTopics ?? []).includes('mfsd')}
 								onIonChange={(e) => {
-									if (!userData.subbedTopics) return
 									setUserDataDoc(user, {
 										...userData,
 										subbedTopics: e.detail.checked
-											? userData.subbedTopics?.concat('mfsd')
-											: userData.subbedTopics?.filter((topic) => topic !== 'mfsd'),
+											? (userData.subbedTopics ?? []).concat('mfsd')
+											: (userData.subbedTopics ?? []).filter((topic) => topic !== 'mfsd'),
 									})
 								}}
 							/>
@@ -201,14 +199,13 @@ const Profile: React.FC = () => {
 						<IonItem>
 							<IonLabel>MWF Update Notifications</IonLabel>
 							<IonToggle
-								checked={userData.subbedTopics?.includes('mwf')}
+								checked={(userData.subbedTopics ?? []).includes('mwf')}
 								onIonChange={(e) => {
-									if (!userData.subbedTopics) return
 									setUserDataDoc(user, {
 										...userData,
 										subbedTopics: e.detail.checked
-											? userData.subbedTopics?.concat('mwf')
-											: userData.subbedTopics?.filter((topic) => topic !== 'mwf'),
+											? (userData.subbedTopics ?? []).concat('mwf')
+											: (userData.subbedTopics ?? []).filter((topic) => topic !== 'mwf'),
 									})
 								}}
 							/>
@@ -216,14 +213,27 @@ const Profile: React.FC = () => {
 						<IonItem>
 							<IonLabel>NABSD Update Notifications</IonLabel>
 							<IonToggle
-								checked={userData.subbedTopics?.includes('nabsd')}
+								checked={(userData.subbedTopics ?? []).includes('nabsd')}
 								onIonChange={(e) => {
-									if (!userData.subbedTopics) return
 									setUserDataDoc(user, {
 										...userData,
 										subbedTopics: e.detail.checked
-											? userData.subbedTopics?.concat('nabsd')
-											: userData.subbedTopics?.filter((topic) => topic !== 'nabsd'),
+											? (userData.subbedTopics ?? []).concat('nabsd')
+											: (userData.subbedTopics ?? []).filter((topic) => topic !== 'nabsd'),
+									})
+								}}
+							/>
+						</IonItem>
+						<IonItem>
+							<IonLabel>MidBay Notifications</IonLabel>
+							<IonToggle
+								checked={(userData.subbedTopics ?? []).includes('trade')}
+								onIonChange={(e) => {
+									setUserDataDoc(user, {
+										...userData,
+										subbedTopics: e.detail.checked
+											? (userData.subbedTopics ?? []).concat('trade')
+											: (userData.subbedTopics ?? []).filter((topic) => topic !== 'trade'),
 									})
 								}}
 							/>

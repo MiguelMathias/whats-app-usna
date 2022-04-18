@@ -98,7 +98,7 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userB
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent fullscreen>
+			<IonContent>
 				<IonDatetime
 					style={{ minWidth: '100%' }}
 					min={format(minPickupTime(), 'yyyy-MM-dd')}
@@ -139,13 +139,13 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userB
 			</IonContent>
 		</>
 	)
-	const contentRef = useRef<HTMLIonContentElement | null>(null)
+	const headerRef = useRef<HTMLIonHeaderElement | null>(null)
 
 	useEffect(() => setChosenTime(new Date(chosenTime) < new Date(minPickupTime()) ? minPickupTime() : chosenTime), [userBagItems.join()])
 
 	return (
 		<IonPage>
-			<IonHeader>
+			<IonHeader ref={headerRef}>
 				<IonToolbar>
 					<IonButtons slot='start'>
 						<IonMenuButton />
@@ -195,8 +195,8 @@ const RestaurantBagPage: React.FC<RestaurantBagPageProps> = ({ restaurant, userB
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent fullscreen ref={contentRef}>
-				<IonItem button detail onClick={() => presentPickupModal({ swipeToClose: true, presentingElement: contentRef.current ?? undefined })}>
+			<IonContent fullscreen>
+				<IonItem button detail onClick={() => presentPickupModal({ swipeToClose: true, presentingElement: headerRef.current ?? undefined })}>
 					<IonLabel>Scheduled Pickup</IonLabel>
 					<IonLabel slot='end'>{masterDateTime !== 'ASAP' ? format(masterDateTime, 'EEE MMM dd, H:mm a') : 'ASAP'}</IonLabel>
 				</IonItem>
