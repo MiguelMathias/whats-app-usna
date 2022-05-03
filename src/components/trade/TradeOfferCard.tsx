@@ -27,7 +27,7 @@ const TradeOfferCard: React.FC<TradeOfferCardProps> = ({ isMine, tradeOffer }) =
 	}, [tradeOffer.uid])
 
 	return (
-		<IonCard style={{ minWidth: '95%' }}>
+		<IonCard className='card' style={{ minWidth: '95%' }}>
 			<ImgOrVidSlides slideSrcs={srcs} />
 			<IonCardHeader>
 				<div

@@ -4,6 +4,8 @@ import {
 	IonContent,
 	IonHeader,
 	IonIcon,
+	IonInfiniteScroll,
+	IonInfiniteScrollContent,
 	IonInput,
 	IonItem,
 	IonLabel,
@@ -17,21 +19,29 @@ import {
 	IonToolbar,
 	useIonModal,
 } from '@ionic/react'
+import { query, where, collection, orderBy, OrderByDirection, DocumentData, Query } from 'firebase/firestore'
 import { arrowDownOutline, arrowUpOutline, checkmarkOutline, optionsOutline, searchOutline, swapVerticalOutline } from 'ionicons/icons'
-import { useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffectOnce } from 'react-use'
+import { AppContext } from '../../AppContext'
 import TradeOffersGrid from '../../components/trade/TradeOffersGrid'
 import { SortType, sortTypes, tradeCategories, TradeCategoryModel, TradeOfferModel } from '../../data/trade/Trade'
-import { capitalize } from '../../util/misc'
+import { firestore } from '../../Firebase'
+import { useSubCollection } from '../../util/hooks'
+import { capitalize, chunkArray } from '../../util/misc'
 
 type TradeOffersPageProps = {
-	tradeOffers: TradeOfferModel[]
 	sort: SortType
 	setSort: (sort: SortType) => void
+	query: Query<DocumentData>
 }
 
-const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ tradeOffers, sort, setSort }) => {
+const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ sort, setSort, query }) => {
+	const { userData } = useContext(AppContext)
 	const [categories, setCategories] = useState<TradeCategoryModel[]>(tradeCategories.map((c) => c))
 	const [searchText, setSearchText] = useState('')
+
+	const [tradeOffers, _, limit, incLimit] = useSubCollection<TradeOfferModel>(query, [sort, ...(userData?.tradeFavorites ?? [])], 5)
 
 	const headerRef = useRef<HTMLIonHeaderElement>(null)
 
@@ -126,6 +136,9 @@ const TradeOffersPage: React.FC<TradeOffersPageProps> = ({ tradeOffers, sort, se
 					<IonInput inputMode='search' type='search' enterkeyhint='search' onIonChange={(e) => setSearchText(e.detail.value ?? '')} />
 				</IonItem>
 				<TradeOffersGrid tradeOffers={tradeOffers} searchText={searchText} categories={categories} />
+				<IonInfiniteScroll onIonInfinite={incLimit} threshold='100px' disabled={tradeOffers.length < limit}>
+					<IonInfiniteScrollContent loadingSpinner='dots' />
+				</IonInfiniteScroll>
 			</IonContent>
 		</IonPage>
 	)

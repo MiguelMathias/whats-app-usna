@@ -52,7 +52,7 @@ const TradeMyOfferPage: React.FC = () => {
 	const [files, setFiles] = useState<File[]>([])
 	const [roomNoVisible, setRoomNoVisible] = useState(!!tradeOffer.roomNumber)
 	const [phoneNoVisible, setPhoneNoVisible] = useState(!!tradeOffer.phoneNumber)
-	const [emailVisible, setEmailVisible] = useState(!!tradeOffer.email)
+	//const [emailVisible, setEmailVisible] = useState(!!tradeOffer.email)
 	const [venmoIdVisible, setVenmoIdVisible] = useState(!!tradeOffer.venmoId)
 
 	const title = useRef(tradeOffer.title)
@@ -155,7 +155,7 @@ const TradeMyOfferPage: React.FC = () => {
 									posterUid: user.uid,
 									roomNumber: roomNoVisible ? userData?.roomNumber ?? '' : '',
 									phoneNumber: phoneNoVisible ? userData?.phoneNumber ?? '' : '',
-									email: emailVisible ? user.email ?? '' : '',
+									email: user.email,
 									venmoId: venmoIdVisible ? userData?.venmoId ?? '' : '',
 									bestBid: tradeOffer.bestBid ?? { price: 0, email: '' },
 								} as TradeOfferModel)
@@ -191,12 +191,12 @@ const TradeMyOfferPage: React.FC = () => {
 						<IonLabel position='stacked'>Price</IonLabel>
 						<IonInput inputMode='decimal' type='number' value={price.current} onIonChange={(e) => (price.current = +(e.detail.value ?? 0))} />
 					</IonItem>
-					{user.email && (
+					{/* {user.email && (
 						<IonItem>
 							<IonLabel>Show Email ({user.email})?</IonLabel>
 							<IonCheckbox slot='end' checked={emailVisible} onIonChange={(e) => setEmailVisible(e.detail.checked)} />
 						</IonItem>
-					)}
+					)} */}
 					{userData?.phoneNumber && (
 						<IonItem>
 							<IonLabel>Show Phone Number ({userData?.phoneNumber})?</IonLabel>
@@ -251,7 +251,7 @@ const TradeMyOfferPage: React.FC = () => {
 					)}
 				</IonList>
 			</IonContent>
-			{!adding && (
+			{!adding && tradeOffer.bestBid?.email && (
 				<IonFooter>
 					<IonItem>
 						<IonLabel>

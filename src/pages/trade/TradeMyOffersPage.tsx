@@ -20,15 +20,12 @@ import { TradeOfferModel } from '../../data/trade/Trade'
 import { firestore } from '../../Firebase'
 import { useSubCollection } from '../../util/hooks'
 
-type TradeMyOffersPageProps = {
-	onInfinite?: () => void
-}
-
-const TradeMyOffersPage: React.FC<TradeMyOffersPageProps> = ({ onInfinite }) => {
+const TradeMyOffersPage: React.FC = () => {
 	const { user } = useContext(AppContext)
-	const [tradeOffers] = useSubCollection<TradeOfferModel>(
+	const [tradeOffers, _, limit, incLimit] = useSubCollection<TradeOfferModel>(
 		query(collection(firestore, 'trade'), where('posterUid', '==', user?.uid ?? 'nil'), orderBy('posted', 'desc')),
-		[user?.uid]
+		[user?.uid],
+		30
 	)
 
 	return (
@@ -48,6 +45,9 @@ const TradeMyOffersPage: React.FC<TradeMyOffersPageProps> = ({ onInfinite }) => 
 			</IonHeader>
 			<IonContent fullscreen>
 				<TradeOffersGrid isMine={true} tradeOffers={tradeOffers} />
+				<IonInfiniteScroll onIonInfinite={incLimit} threshold='100px' disabled={tradeOffers.length < limit}>
+					<IonInfiniteScrollContent loadingSpinner='dots' />
+				</IonInfiniteScroll>
 			</IonContent>
 		</IonPage>
 	)

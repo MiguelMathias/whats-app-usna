@@ -5,9 +5,9 @@ import { Redirect, Route } from 'react-router'
 import { AppContext } from '../../AppContext'
 import UpdatePage from '../UpdatePage'
 import UpdatesPage from '../UpdatesPage'
-import Profile from './Profile'
+import ProfilePage from './ProfilePage'
 
-const UserHome: React.FC = () => (
+const UserHomeTabs: React.FC = () => (
 	<IonTabs>
 		<IonRouterOutlet>
 			<Route exact path='/mids'>
@@ -20,7 +20,7 @@ const UserHome: React.FC = () => (
 				<UpdatePage title='Account Update' dept='mids' />
 			</Route>
 			<Route exact path='/mids/profile'>
-				<Profile />
+				<ProfilePage />
 			</Route>
 		</IonRouterOutlet>
 		<IonTabBar slot='bottom'>
@@ -35,4 +35,4 @@ const UserHome: React.FC = () => (
 		</IonTabBar>
 	</IonTabs>
 )
-export default UserHome
+export default UserHomeTabs

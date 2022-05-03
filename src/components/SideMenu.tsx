@@ -34,7 +34,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ restaurants }) => {
 			{ title: 'MWF', path: '/mwf', icon: cashOutline },
 			{ title: 'NABSD', path: '/nabsd', icon: libraryOutline },
 		] as Pages[],
-		tradePages: [{ title: 'Trade', path: '/trade', icon: swapHorizontalOutline }] as Pages[],
+		tradePages: [{ title: 'MidBay', path: '/trade', icon: swapHorizontalOutline }] as Pages[],
 		restaurantPages: restaurants.map(
 			(restaurant) =>
 				({

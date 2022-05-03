@@ -2,8 +2,10 @@ import {
 	IonBackButton,
 	IonButton,
 	IonButtons,
+	IonCol,
 	IonContent,
 	IonFooter,
+	IonGrid,
 	IonHeader,
 	IonIcon,
 	IonInput,
@@ -12,18 +14,20 @@ import {
 	IonLabel,
 	IonList,
 	IonPage,
+	IonRow,
+	IonText,
 	IonTitle,
 	IonToolbar,
 } from '@ionic/react'
-import { doc } from 'firebase/firestore'
+import { doc, serverTimestamp } from 'firebase/firestore'
 import { listAll, ref, getDownloadURL } from 'firebase/storage'
-import { star, starOutline } from 'ionicons/icons'
+import { bedOutline, callOutline, chatbubbleOutline, chatbubblesOutline, logoVenmo, mailOutline, star, starOutline } from 'ionicons/icons'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { AppContext } from '../../AppContext'
 import ImgOrVidSlides from '../../components/ImgOrVidSlides'
 import { setUserDataDoc, UserDataModel } from '../../data/account/User'
-import { TradeOfferModel } from '../../data/trade/Trade'
+import { CommentModel, TradeOfferModel } from '../../data/trade/Trade'
 import { firestore, storage } from '../../Firebase'
 import { useSubDoc } from '../../util/hooks'
 import LoadingPage from '../LoadingPage'
@@ -32,6 +36,7 @@ const TradeOfferPage: React.FC = () => {
 	const { uid } = useParams<{ uid: string }>()
 	const { user, userData } = useContext(AppContext)
 	const [tradeOffer, _, setTradeOfferDoc] = useSubDoc<TradeOfferModel>(doc(firestore, 'trade', uid))
+	const [newComment, setNewComment] = useState('')
 
 	const [srcs, setSrcs] = useState<string[]>([])
 	const [bestBidPrice, setBestBidPrice] = useState(tradeOffer?.bestBid?.price ?? 0)
@@ -78,6 +83,48 @@ const TradeOfferPage: React.FC = () => {
 			</IonHeader>
 			<IonContent fullscreen>
 				<ImgOrVidSlides slideSrcs={srcs} />
+				<IonGrid>
+					<IonRow>
+						{tradeOffer.email && (
+							<IonCol size='6'>
+								<IonItem href={`mailto:${tradeOffer.email}`} target='_blank' style={{ borderRadius: '4px' }} detail button>
+									<IonIcon slot='start' icon={mailOutline} />
+									<IonLabel>{tradeOffer.email}</IonLabel>
+								</IonItem>
+							</IonCol>
+						)}
+						{tradeOffer.phoneNumber && (
+							<IonCol size='6'>
+								<IonItem href={`sms:${tradeOffer.phoneNumber}`} target='_blank' style={{ borderRadius: '4px' }} detail button>
+									<IonIcon slot='start' icon={chatbubblesOutline} />
+									<IonLabel>{tradeOffer.phoneNumber}</IonLabel>
+								</IonItem>
+							</IonCol>
+						)}
+						{tradeOffer.venmoId && (
+							<IonCol size='6'>
+								<IonItem
+									href={`https://account.venmo.com/u/${tradeOffer.venmoId.replaceAll('@', '')}`}
+									target='_blank'
+									style={{ borderRadius: '4px' }}
+									detail
+									button
+								>
+									<IonIcon slot='start' icon={logoVenmo} />
+									<IonLabel>{tradeOffer.venmoId}</IonLabel>
+								</IonItem>
+							</IonCol>
+						)}
+						{tradeOffer.roomNumber && (
+							<IonCol size='6'>
+								<IonItem style={{ borderRadius: '4px' }}>
+									<IonIcon slot='start' icon={bedOutline} />
+									<IonLabel>{tradeOffer.roomNumber}</IonLabel>
+								</IonItem>
+							</IonCol>
+						)}
+					</IonRow>
+				</IonGrid>
 				<IonList lines='none'>
 					<IonItem>
 						<b slot='start'>Asking Price:</b>
@@ -97,39 +144,44 @@ const TradeOfferPage: React.FC = () => {
 						<b slot='start'>Date Posted:</b>
 						<p slot='end'>{tradeOffer.posted?.toDate().toDateString()}</p>
 					</IonItem>
-					{(tradeOffer.email || tradeOffer.phoneNumber || tradeOffer.venmoId || tradeOffer.roomNumber) && (
-						<IonItemDivider>Contact Information</IonItemDivider>
-					)}
-					{tradeOffer.email && (
-						<IonItem>
-							<b slot='start'>Email:</b>
-							<p slot='end'>
-								<a href={`mailto:${tradeOffer.email}`}>{tradeOffer.email}</a>
-							</p>
-						</IonItem>
-					)}
-					{tradeOffer.phoneNumber && (
-						<IonItem>
-							<b slot='start'>Phone Number:</b>
-							<p slot='end'>
-								<a href={`tel:${tradeOffer.phoneNumber}`}>{tradeOffer.phoneNumber}</a>
-							</p>
-						</IonItem>
-					)}
-					{tradeOffer.venmoId && (
-						<IonItem>
-							<b slot='start'>Venmo ID:</b>
-							<p slot='end'>
-								<a href={`https://account.venmo.com/u/${tradeOffer.venmoId}`}>{tradeOffer.venmoId}</a>
-							</p>
-						</IonItem>
-					)}
-					{tradeOffer.roomNumber && (
-						<IonItem>
-							<b slot='start'>Room Number:</b>
-							<p slot='end'>{tradeOffer.roomNumber}</p>
-						</IonItem>
-					)}
+					<IonItemDivider>Comments</IonItemDivider>
+					{tradeOffer.comments
+						?.sort((c1, c2) => +(c1.posted ?? 0) - +(c2.posted ?? 0))
+						.map((comment, i) => (
+							<IonItem key={i} style={{ padding: 4 }}>
+								<IonLabel position='stacked'>{comment.fName}</IonLabel>
+								<img slot='start' src={comment?.pfpUrl ?? undefined} width={40} height={40} style={{ borderRadius: '50%' }} />
+								<p>{comment.comment}</p>
+							</IonItem>
+						))}
+					<IonItem style={{ padding: 4 }}>
+						<img slot='start' src={user?.photoURL ?? undefined} width={40} height={40} style={{ borderRadius: '50%' }} />
+						<IonInput
+							value={newComment}
+							onIonChange={(e) => setNewComment(e.detail.value ?? '')}
+							placeholder={`Post publicly as ${user?.displayName?.split(' ')[0]}`}
+						/>
+						<IonButton
+							slot='end'
+							disabled={!newComment}
+							onClick={() =>
+								setTradeOfferDoc({
+									...tradeOffer,
+									comments: [
+										...(tradeOffer.comments ?? []),
+										{
+											fName: user?.displayName?.split(' ')[0],
+											comment: newComment,
+											pfpUrl: user?.photoURL ?? '',
+											posted: new Date(),
+										} as CommentModel,
+									],
+								}).finally(() => setNewComment(''))
+							}
+						>
+							Comment
+						</IonButton>
+					</IonItem>
 				</IonList>
 			</IonContent>
 			{tradeOffer.posterUid !== user?.uid && (

@@ -24,12 +24,12 @@ import SideMenu from './components/SideMenu'
 import { UserDataModel } from './data/account/User'
 import { RestaurantModel } from './data/restaurants/Restaurant'
 import { auth, firestore, messaging } from './Firebase'
-import Account from './pages/account/Account'
-import MFSDTabsPage from './pages/mfsd/MFSDTabsPage'
-import MWFTabsPage from './pages/mwf/MWFTabsPage'
-import NABSDTabsPage from './pages/nabsd/NABSDTabsPage'
-import RestaurantTabsPage from './pages/restaurants/RestaurantTabsPage'
-import TradeTabsPage from './pages/trade/TradeTabsPage'
+import Account from './pages/account/AccountPage'
+import MFSDTabs from './pages/mfsd/MFSDTabs'
+import MWFTabs from './pages/mwf/MWFTabs'
+import NABSDTabs from './pages/nabsd/NABSDTabs'
+import RestaurantTabs from './pages/restaurants/RestaurantTabs'
+import TradeTabs from './pages/trade/TradeTabs'
 /* Theme variables */
 import './theme/variables.css'
 import { useSubCollection } from './util/hooks'
@@ -64,6 +64,7 @@ const App: React.FC = () => {
 					const newUserData = snapshot.data() as UserDataModel
 					if (!newUserData.uid) newUserData.uid = user.uid
 					if (!newUserData.displayName) newUserData.displayName = user.displayName || undefined
+					if (!newUserData.email) newUserData.email = user.email ?? ''
 					setUserData(newUserData)
 				} else
 					setDoc(doc(firestore, 'users', user.uid), {
@@ -84,7 +85,7 @@ const App: React.FC = () => {
 	}, [user?.uid])
 
 	onAuthStateChanged(auth, (user) => {
-		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '') /* /m[1-9]{6}@usna\.edu/.test(user?.email ?? '') */) setUser(user ?? undefined)
+		if (/[a-zA-Z0-9]*@usna\.edu/.test(user?.email ?? '')) setUser(user ?? undefined)
 		else if (user) {
 			showBadAccountToast({
 				header: 'Wrong Account!',
@@ -110,19 +111,19 @@ const App: React.FC = () => {
 								<Account />
 							</Route>
 							<Route path='/mfsd'>
-								<MFSDTabsPage />
+								<MFSDTabs />
 							</Route>
 							<Route path='/mwf'>
-								<MWFTabsPage />
+								<MWFTabs />
 							</Route>
 							<Route path='/nabsd'>
-								<NABSDTabsPage />
+								<NABSDTabs />
 							</Route>
 							<Route path='/trade'>
-								<TradeTabsPage />
+								<TradeTabs />
 							</Route>
 							<Route path={`/restaurants/:restaurantPathParamB64`}>
-								<RestaurantTabsPage restaurants={restaurants} />
+								<RestaurantTabs restaurants={restaurants} />
 							</Route>
 						</IonRouterOutlet>
 					</IonSplitPane>

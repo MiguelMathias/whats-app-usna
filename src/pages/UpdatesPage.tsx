@@ -1,7 +1,21 @@
 import { collection, orderBy, where } from '@firebase/firestore'
-import { IonButtons, IonContent, IonHeader, IonItem, IonLabel, IonMenuButton, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react'
+import {
+	IonButtons,
+	IonContent,
+	IonHeader,
+	IonInfiniteScroll,
+	IonInfiniteScrollContent,
+	IonItem,
+	IonLabel,
+	IonMenuButton,
+	IonPage,
+	IonSelect,
+	IonSelectOption,
+	IonTitle,
+	IonToolbar,
+} from '@ionic/react'
 import { query } from 'firebase/firestore'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../AppContext'
 import UpdateCard from '../components/UpdateCard'
 import { UpdateModel } from '../data/Update'
@@ -29,10 +43,14 @@ const UpdatesPage: React.FC<UpdatesPageProps> = ({ dept, title }) => {
 		orderBy('posted', 'desc')
 	)
 
-	const [updates] = useSubCollection<UpdateModel>(updatesQuery)
+	const [updates, _, limit, incLimit, setLimit] = useSubCollection<UpdateModel>(updatesQuery, [], 20)
 
 	const allCategories = () => updates.map((update) => update.category).filter(distinct)
 	const [categories, setCategories] = useState<string[]>([])
+
+	useEffect(() => {
+		if (categories.length > 0) setLimit(Infinity)
+	}, [categories])
 
 	return (
 		<IonPage>
@@ -72,6 +90,9 @@ const UpdatesPage: React.FC<UpdatesPageProps> = ({ dept, title }) => {
 								<UpdateCard update={update} />
 							</React.Fragment>
 						))}
+					<IonInfiniteScroll onIonInfinite={incLimit} threshold='100px' disabled={updates.length < limit}>
+						<IonInfiniteScrollContent loadingSpinner='dots' />
+					</IonInfiniteScroll>
 				</IonContent>
 			)}
 		</IonPage>

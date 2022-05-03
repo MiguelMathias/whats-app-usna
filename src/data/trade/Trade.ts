@@ -14,7 +14,10 @@ export type TradeOfferModel = {
 	active: boolean
 	posted?: Timestamp
 	bestBid?: { price: number; email: string }
+	comments?: CommentModel[]
 }
+
+export type CommentModel = { fName?: string; pfpUrl?: string; comment: string; posted?: Date }
 
 export const tradeCategories = [
 	'Art',
