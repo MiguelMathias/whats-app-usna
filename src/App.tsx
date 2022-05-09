@@ -64,7 +64,7 @@ const App: React.FC = () => {
 					const newUserData = snapshot.data() as UserDataModel
 					if (!newUserData.uid) newUserData.uid = user.uid
 					if (!newUserData.displayName) newUserData.displayName = user.displayName || undefined
-					if (!newUserData.email) newUserData.email = user.email ?? ''
+					if (!newUserData.email) setDoc(doc(firestore, 'users', user.uid), { ...newUserData, email: user.email ?? '' } as UserDataModel)
 					setUserData(newUserData)
 				} else
 					setDoc(doc(firestore, 'users', user.uid), {
